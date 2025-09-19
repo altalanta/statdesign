@@ -1,0 +1,19 @@
+site_name: statdesign
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - API: api.md
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_source: false
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true

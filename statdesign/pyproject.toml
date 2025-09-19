@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "statdesign"
+version = "0.1.0"
+description = "Tiny, tested power & sample-size utilities with a CLI"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Altalanta" }]
+license = { text = "MIT" }
+dependencies = ["numpy", "scipy", "pandas", "typer", "rich"]
+keywords = ["statistics", "power", "sample size", "design", "experiments"]
+
+[project.scripts]
+statdesign = "statdesign.cli:app"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "-q"

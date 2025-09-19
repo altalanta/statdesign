@@ -1,0 +1,11 @@
+numpy
+scipy
+pandas
+typer
+rich
+pytest
+pytest-cov
+mkdocs
+mkdocstrings[python]
+mkdocs-material
+coverage-badge
