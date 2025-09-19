@@ -2,12 +2,6 @@
 
 Tiny, tested power & sample-size utilities with a CLI.
 
-<!-- BADGES:BEGIN -->
-[![CI](https://img.shields.io/github/actions/workflow/status/OWNER/REPO/ci.yml?branch=main)](https://github.com/OWNER/REPO/actions)
-![Coverage](docs/coverage.svg)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-<!-- BADGES:END -->
-
 ## Install
 
 ```bash
