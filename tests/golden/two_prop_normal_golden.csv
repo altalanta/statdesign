@@ -1,0 +1,5 @@
+p1,p2,alpha,power,ratio,test,tail,ni_margin,ni_type,exact,exp_n1,exp_n2
+0.6,0.5,0.05,0.8,1.0,z,two-sided,,,False,389,389
+0.7,0.6,0.025,0.9,1.5,z,greater,,,False,404,606
+0.45,0.5,0.05,0.85,0.8,z,less,,,False,1613,1291
+0.6,0.58,0.025,0.9,1.0,z,greater,0.05,noninferiority,False,1038,1038
