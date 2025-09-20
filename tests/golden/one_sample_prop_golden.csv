@@ -1,0 +1,5 @@
+p,p0,alpha,power,tail,exact,ni_margin,ni_type,exp_n
+0.6,0.5,0.05,0.8,two-sided,False,,,197
+0.55,0.5,0.05,0.9,greater,False,,,857
+0.6,0.5,0.025,0.8,greater,False,0.05,noninferiority,88
+0.65,0.5,0.05,0.8,two-sided,True,,,92

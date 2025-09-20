@@ -1,0 +1,17 @@
+site_name: statdesign
+site_url: https://altalanta.github.io/statdesign/
+theme:
+  name: material
+nav:
+  - Overview: index.md
+  - Usage: usage.md
+  - Approximations: approximations.md
+  - Parity Tables:
+      - parity/README.md
+plugins:
+  - search
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
