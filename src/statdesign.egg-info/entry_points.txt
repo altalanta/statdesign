@@ -1,0 +1,2 @@
+[console_scripts]
+statdesign = statdesign.cli:main

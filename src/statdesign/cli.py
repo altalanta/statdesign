@@ -1,254 +1,396 @@
-"""Command-line interface mirroring the statdesign API."""
+"""Command-line interface for the statdesign package."""
 
 from __future__ import annotations
 
-import argparse
 import json
 import sys
-from typing import Any, Optional
+from dataclasses import dataclass
+from typing import Any, Callable
 
-from . import api
+try:  # Import Typer lazily so the library install stays lightweight.
+    import typer
+except ModuleNotFoundError:  # pragma: no cover - exercised only when CLI extra missing
+    def main(argv: list[str] | None = None) -> int:
+        sys.stderr.write(
+            "statdesign CLI requires the optional 'cli' dependencies.\n"
+            "Install with `pip install \"statdesign[cli]\"` and retry.\n"
+        )
+        return 1
+else:
+    from functools import wraps
 
+    from typer import Exit
 
-def _parse_allocation(allocation: Optional[str]) -> Optional[list[float]]:
-    if allocation is None:
-        return None
-    parts = [part.strip() for part in allocation.split(",") if part.strip()]
-    if not parts:
-        raise ValueError("allocation must contain at least one positive weight")
-    weights: list[float] = []
-    for item in parts:
-        try:
-            value = float(item)
-        except ValueError as exc:  # pragma: no cover
-            raise ValueError(f"invalid allocation weight: {item}") from exc
-        if value <= 0:
-            raise ValueError("allocation weights must be positive")
-        weights.append(value)
-    return weights
-
-
-def _print_json(payload: dict[str, Any]) -> None:
-    sys.stdout.write(json.dumps(payload, sort_keys=True))
-    sys.stdout.write("\n")
-
-
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Deterministic power & sample-size calculations")
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    # n_two_prop
-    parser_two_prop = subparsers.add_parser("n_two_prop", help="Two-sample proportion sample sizes")
-    parser_two_prop.add_argument("--p1", type=float, required=True)
-    parser_two_prop.add_argument("--p2", type=float, required=True)
-    parser_two_prop.add_argument("--alpha", type=float, default=0.05)
-    parser_two_prop.add_argument("--power", type=float, default=0.80)
-    parser_two_prop.add_argument("--ratio", type=float, default=1.0)
-    parser_two_prop.add_argument("--test", choices=["z", "t"], default="z")
-    parser_two_prop.add_argument(
-        "--tail",
-        choices=["two-sided", "greater", "less"],
-        default="two-sided",
-    )
-    parser_two_prop.add_argument("--ni-margin", type=float, dest="ni_margin")
-    parser_two_prop.add_argument(
-        "--ni-type", choices=["noninferiority", "equivalence"], dest="ni_type"
-    )
-    parser_two_prop.add_argument("--exact", action="store_true")
-
-    # n_mean
-    parser_mean = subparsers.add_parser("n_mean", help="Two-sample mean sample sizes")
-    parser_mean.add_argument("--mu1", type=float, required=True)
-    parser_mean.add_argument("--mu2", type=float, required=True)
-    parser_mean.add_argument("--sd", type=float, required=True)
-    parser_mean.add_argument("--alpha", type=float, default=0.05)
-    parser_mean.add_argument("--power", type=float, default=0.80)
-    parser_mean.add_argument("--ratio", type=float, default=1.0)
-    parser_mean.add_argument("--test", choices=["z", "t"], default="t")
-    parser_mean.add_argument(
-        "--tail",
-        choices=["two-sided", "greater", "less"],
-        default="two-sided",
-    )
-    parser_mean.add_argument("--ni-margin", type=float, dest="ni_margin")
-    parser_mean.add_argument(
-        "--ni-type", choices=["noninferiority", "equivalence"], dest="ni_type"
-    )
-
-    # n_paired
-    parser_paired = subparsers.add_parser("n_paired", help="Paired means sample size")
-    parser_paired.add_argument("--delta", type=float, required=True)
-    parser_paired.add_argument("--sd-diff", type=float, required=True, dest="sd_diff")
-    parser_paired.add_argument("--alpha", type=float, default=0.05)
-    parser_paired.add_argument("--power", type=float, default=0.80)
-    parser_paired.add_argument(
-        "--tail",
-        choices=["two-sided", "greater", "less"],
-        default="two-sided",
-    )
-    parser_paired.add_argument("--ni-margin", type=float, dest="ni_margin")
-    parser_paired.add_argument(
-        "--ni-type", choices=["noninferiority", "equivalence"], dest="ni_type"
-    )
-
-    # n_one_sample_mean
-    parser_one_mean = subparsers.add_parser(
-        "n_one_sample_mean", help="One-sample mean sample size"
-    )
-    parser_one_mean.add_argument("--delta", type=float, required=True)
-    parser_one_mean.add_argument("--sd", type=float, required=True)
-    parser_one_mean.add_argument("--alpha", type=float, default=0.05)
-    parser_one_mean.add_argument("--power", type=float, default=0.80)
-    parser_one_mean.add_argument(
-        "--tail",
-        choices=["two-sided", "greater", "less"],
-        default="two-sided",
-    )
-    parser_one_mean.add_argument("--test", choices=["z", "t"], default="t")
-    parser_one_mean.add_argument("--ni-margin", type=float, dest="ni_margin")
-    parser_one_mean.add_argument(
-        "--ni-type", choices=["noninferiority", "equivalence"], dest="ni_type"
-    )
-
-    # n_one_sample_prop
-    parser_one_prop = subparsers.add_parser(
-        "n_one_sample_prop", help="One-sample proportion sample size"
-    )
-    parser_one_prop.add_argument("--p", type=float, required=True)
-    parser_one_prop.add_argument("--p0", type=float, required=True)
-    parser_one_prop.add_argument("--alpha", type=float, default=0.05)
-    parser_one_prop.add_argument("--power", type=float, default=0.80)
-    parser_one_prop.add_argument(
-        "--tail",
-        choices=["two-sided", "greater", "less"],
-        default="two-sided",
-    )
-    parser_one_prop.add_argument("--exact", action="store_true")
-    parser_one_prop.add_argument("--ni-margin", type=float, dest="ni_margin")
-    parser_one_prop.add_argument(
-        "--ni-type", choices=["noninferiority", "equivalence"], dest="ni_type"
-    )
-
-    # n_anova
-    parser_anova = subparsers.add_parser("n_anova", help="One-way ANOVA sample size")
-    parser_anova.add_argument("--k-groups", type=int, required=True, dest="k_groups")
-    parser_anova.add_argument("--effect-f", type=float, required=True, dest="effect_f")
-    parser_anova.add_argument("--alpha", type=float, default=0.05)
-    parser_anova.add_argument("--power", type=float, default=0.80)
-    parser_anova.add_argument("--allocation", type=str)
-
-    # alpha_adjust
-    parser_alpha = subparsers.add_parser("alpha_adjust", help="Multiple-testing alpha adjustment")
-    parser_alpha.add_argument("--m", type=int, required=True)
-    parser_alpha.add_argument("--alpha", type=float, default=0.05)
-    parser_alpha.add_argument("--method", choices=["bonferroni", "bh"], default="bonferroni")
-
-    return parser
-
-
-def main(argv: Optional[list[str]] = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(argv)
+    try:  # Optional rich pretty tables for TTY output
+        from rich.console import Console
+        from rich.table import Table
+    except ModuleNotFoundError:  # pragma: no cover - optional styling
+        Console = None  # type: ignore
+        Table = None  # type: ignore
 
     try:
-        if args.command == "n_two_prop":
-            result = api.n_two_prop(
-                p1=args.p1,
-                p2=args.p2,
-                alpha=args.alpha,
-                power=args.power,
-                ratio=args.ratio,
-                test=args.test,
-                tail=args.tail,
-                ni_margin=args.ni_margin,
-                ni_type=args.ni_type,
-                exact=args.exact,
-            )
-            _print_json({"n1": result[0], "n2": result[1]})
-            return 0
-        if args.command == "n_mean":
-            result = api.n_mean(
-                mu1=args.mu1,
-                mu2=args.mu2,
-                sd=args.sd,
-                alpha=args.alpha,
-                power=args.power,
-                ratio=args.ratio,
-                test=args.test,
-                tail=args.tail,
-                ni_margin=args.ni_margin,
-                ni_type=args.ni_type,
-            )
-            _print_json({"n1": result[0], "n2": result[1]})
-            return 0
-        if args.command == "n_paired":
-            n = api.n_paired(
-                delta=args.delta,
-                sd_diff=args.sd_diff,
-                alpha=args.alpha,
-                power=args.power,
-                tail=args.tail,
-                ni_margin=args.ni_margin,
-                ni_type=args.ni_type,
-            )
-            _print_json({"n": n})
-            return 0
-        if args.command == "n_one_sample_mean":
-            n = api.n_one_sample_mean(
-                delta=args.delta,
-                sd=args.sd,
-                alpha=args.alpha,
-                power=args.power,
-                tail=args.tail,
-                test=args.test,
-                ni_margin=args.ni_margin,
-                ni_type=args.ni_type,
-            )
-            _print_json({"n": n})
-            return 0
-        if args.command == "n_one_sample_prop":
-            n = api.n_one_sample_prop(
-                p=args.p,
-                p0=args.p0,
-                alpha=args.alpha,
-                power=args.power,
-                tail=args.tail,
-                exact=args.exact,
-                ni_margin=args.ni_margin,
-                ni_type=args.ni_type,
-            )
-            _print_json({"n": n})
-            return 0
-        if args.command == "n_anova":
-            allocation = _parse_allocation(args.allocation)
-            n_total = api.n_anova(
-                k_groups=args.k_groups,
-                effect_f=args.effect_f,
-                alpha=args.alpha,
-                power=args.power,
-                allocation=allocation,
-            )
-            payload: dict[str, object] = {"n_total": n_total}
-            if allocation is not None:
-                payload["allocation"] = allocation
-            _print_json(payload)
-            return 0
-        if args.command == "alpha_adjust":
-            if args.method == "bonferroni":
-                value = api.alpha_adjust(m=args.m, alpha=args.alpha, method="bonferroni")
-                _print_json({"alpha": value})
+        from tabulate import tabulate
+    except ModuleNotFoundError:  # pragma: no cover - optional fallback
+        tabulate = None  # type: ignore
+
+    from . import api
+
+    app = typer.Typer(
+        add_completion=False,
+        no_args_is_help=True,
+        help=(
+            "Deterministic power & sample-size calculations with analytic formulas.\n\n"
+            "Examples:\n"
+            "  statdesign n_two_prop --p1 0.6 --p2 0.5\n"
+            "  statdesign n_mean --mu1 0 --mu2 0.5 --sd 1 --tail two-sided\n"
+            "  statdesign alpha_adjust --m 12 --method bonferroni\n"
+        ),
+    )
+
+    @dataclass
+    class OutputSettings:
+        json: bool = True
+        table: bool = False
+
+        def normalize(self) -> None:
+            if not self.json and not self.table:
+                self.json = True
+
+    _SETTINGS = OutputSettings()
+
+    def _emit_json(payload: dict[str, Any]) -> None:
+        typer.echo(json.dumps(payload, sort_keys=True, separators=(",", ":")))
+
+    def _stdout_isatty() -> bool:
+        isatty = getattr(sys.stdout, "isatty", None)
+        if callable(isatty):
+            try:
+                return bool(isatty())
+            except Exception:  # pragma: no cover - defensive fallback
+                return False
+        return False
+
+    def _format_value(value: Any) -> str:
+        if isinstance(value, float):
+            return f"{value:.6g}"
+        if isinstance(value, (list, tuple)):
+            return ", ".join(_format_value(item) for item in value)
+        return str(value)
+
+    def _emit_table(payload: dict[str, Any]) -> None:
+        if not payload:
+            return
+        if Console is not None and Table is not None and _stdout_isatty():
+            console = Console()
+            table = Table(show_edge=True)
+            table.add_column("key", justify="right")
+            table.add_column("value", justify="left")
+            for key, value in payload.items():
+                table.add_row(str(key), _format_value(value))
+            console.print(table)
+            return
+        if tabulate is not None:
+            headers = ["key", "value"]
+            rows = [(str(k), _format_value(v)) for k, v in payload.items()]
+            typer.echo(tabulate(rows, headers=headers, tablefmt="github"))
+            return
+        for key, value in payload.items():
+            typer.echo(f"{key}: {_format_value(value)}")
+
+    def _emit(payload: dict[str, Any]) -> None:
+        _SETTINGS.normalize()
+        if _SETTINGS.json:
+            _emit_json(payload)
+        if _SETTINGS.table:
+            _emit_table(payload)
+
+    def _fail(message: str, code: int = 2) -> None:
+        typer.echo(message, err=True)
+        raise Exit(code)
+
+    def _parse_allocation(allocation: str | None) -> list[float] | None:
+        if allocation is None:
+            return None
+        parts = [part.strip() for part in allocation.split(",") if part.strip()]
+        if not parts:
+            raise ValueError("allocation must contain at least one positive weight")
+        weights: list[float] = []
+        for item in parts:
+            try:
+                value = float(item)
+            except ValueError as exc:  # pragma: no cover
+                raise ValueError(f"invalid allocation weight: {item}") from exc
+            if value <= 0:
+                raise ValueError("allocation weights must be positive")
+            weights.append(value)
+        return weights
+
+    _ALLOWED_TAILS = ("two-sided", "greater", "less")
+    _ALLOWED_TESTS = ("z", "t")
+    _ALLOWED_NI_TYPES = ("noninferiority", "equivalence")
+    _ALLOWED_METHODS = ("bonferroni", "bh")
+
+    def _normalize_choice(value: str, allowed: tuple[str, ...], name: str) -> str:
+        normalized = value.replace("_", "-").lower()
+        if normalized not in allowed:
+            raise ValueError(f"{name} must be one of {', '.join(allowed)}")
+        return normalized
+
+    def _normalize_optional(value: str | None, allowed: tuple[str, ...], name: str) -> str | None:
+        if value is None:
+            return None
+        return _normalize_choice(value, allowed, name)
+
+    @app.callback()
+    def _configure(
+        json_output: bool = typer.Option(
+            True,
+            "--json/--no-json",
+            help="Emit JSON payloads (default true).",
+            show_default=True,
+        ),
+        table_output: bool = typer.Option(
+            False,
+            "--table/--no-table",
+            help="Emit a table rendering of the results.",
+        ),
+    ) -> None:
+        """Configure global output preferences."""
+
+        global _SETTINGS
+        settings = OutputSettings(json=json_output, table=table_output)
+        settings.normalize()
+        _SETTINGS = settings
+
+    def _handle_errors(func: Callable[..., dict[str, Any]]) -> Callable[..., None]:
+        @wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> None:
+            try:
+                payload = func(*args, **kwargs)
+            except ValueError as exc:
+                _fail(str(exc))
+            except (NotImplementedError, RuntimeError) as exc:
+                _fail(str(exc), code=3)
             else:
-                thresholds = api.bh_thresholds(m=args.m, alpha=args.alpha)
-                _print_json({"thresholds": thresholds})
-            return 0
-    except ValueError as exc:
-        parser.error(str(exc))
-    except (NotImplementedError, RuntimeError) as exc:
-        sys.stderr.write(f"{exc}\n")
-        return 2
+                _emit(payload)
 
-    return 1
+        return wrapper
 
+    @app.command(name="n_two_prop")
+    @_handle_errors
+    def n_two_prop(
+        p1: float = typer.Option(..., min=0.0, max=1.0, help="Proportion for group 1."),
+        p2: float = typer.Option(..., min=0.0, max=1.0, help="Proportion for group 2."),
+        alpha: float = typer.Option(0.05, min=0.0, max=1.0, help="Type I error rate."),
+        power: float = typer.Option(0.80, min=0.0, max=1.0, help="Target power."),
+        ratio: float = typer.Option(1.0, min=0.0, help="Allocation ratio n2/n1."),
+        test: str = typer.Option("z", help="Test statistic ('z' or 't')."),
+        tail: str = typer.Option("two-sided", help="Alternative hypothesis tail."),
+        ni_margin: float | None = typer.Option(None, help="Non-inferiority or equivalence margin."),
+        ni_type: str | None = typer.Option(None, help="Margin type."),
+        exact: bool = typer.Option(False, help="Toggle exact small-sample test."),
+    ) -> dict[str, Any]:
+        """Sample size for two independent proportions."""
 
-if __name__ == "__main__":  # pragma: no cover
-    raise SystemExit(main())
+        from . import api  # Import api types locally
+        test_norm = _normalize_choice(test, _ALLOWED_TESTS, "test")
+        tail_norm = _normalize_choice(tail, _ALLOWED_TAILS, "tail")
+        ni_type_norm = _normalize_optional(ni_type, _ALLOWED_NI_TYPES, "ni_type")
+        n1, n2 = api.n_two_prop(
+            p1=p1,
+            p2=p2,
+            alpha=alpha,
+            power=power,
+            ratio=ratio,
+            test=test_norm,  # type: ignore
+            tail=tail_norm,  # type: ignore
+            ni_margin=ni_margin,
+            ni_type=ni_type_norm,  # type: ignore
+            exact=exact,
+        )
+        return {"n1": n1, "n2": n2}
+
+    @app.command(name="n_one_sample_prop")
+    @_handle_errors
+    def n_one_sample_prop(
+        p: float = typer.Option(..., min=0.0, max=1.0, help="Observed proportion."),
+        p0: float = typer.Option(..., min=0.0, max=1.0, help="Null hypothesis proportion."),
+        alpha: float = typer.Option(0.05, min=0.0, max=1.0),
+        power: float = typer.Option(0.80, min=0.0, max=1.0),
+        tail: str = typer.Option("two-sided", help="Alternative hypothesis tail."),
+        exact: bool = typer.Option(False, help="Use exact binomial enumeration."),
+        ni_margin: float | None = typer.Option(None, help="Non-inferiority/equivalence margin."),
+        ni_type: str | None = typer.Option(None, help="Margin type."),
+    ) -> dict[str, Any]:
+        """Sample size for a one-sample proportion test."""
+
+        tail_norm = _normalize_choice(tail, _ALLOWED_TAILS, "tail")
+        ni_type_norm = _normalize_optional(ni_type, _ALLOWED_NI_TYPES, "ni_type")
+        n = api.n_one_sample_prop(
+            p=p,
+            p0=p0,
+            alpha=alpha,
+            power=power,
+            tail=tail_norm,
+            exact=exact,
+            ni_margin=ni_margin,
+            ni_type=ni_type_norm,
+        )
+        return {"n": n}
+
+    @app.command(name="n_mean")
+    @_handle_errors
+    def n_mean(
+        mu1: float = typer.Option(..., help="Mean for arm 1."),
+        mu2: float = typer.Option(..., help="Mean for arm 2."),
+        sd: float = typer.Option(..., min=0.0, help="Common standard deviation."),
+        alpha: float = typer.Option(0.05, min=0.0, max=1.0),
+        power: float = typer.Option(0.80, min=0.0, max=1.0),
+        ratio: float = typer.Option(1.0, min=0.0, help="Allocation ratio n2/n1."),
+        test: str = typer.Option("t", help="Test statistic ('z' or 't')."),
+        tail: str = typer.Option("two-sided", help="Alternative hypothesis tail."),
+        ni_margin: float | None = typer.Option(None, help="Non-inferiority/equivalence margin."),
+        ni_type: str | None = typer.Option(None, help="Margin type."),
+    ) -> dict[str, Any]:
+        """Sample size for two independent means with shared variance."""
+
+        test_norm = _normalize_choice(test, _ALLOWED_TESTS, "test")
+        tail_norm = _normalize_choice(tail, _ALLOWED_TAILS, "tail")
+        ni_type_norm = _normalize_optional(ni_type, _ALLOWED_NI_TYPES, "ni_type")
+        n1, n2 = api.n_mean(
+            mu1=mu1,
+            mu2=mu2,
+            sd=sd,
+            alpha=alpha,
+            power=power,
+            ratio=ratio,
+            test=test_norm,
+            tail=tail_norm,
+            ni_margin=ni_margin,
+            ni_type=ni_type_norm,
+        )
+        return {"n1": n1, "n2": n2}
+
+    @app.command(name="n_one_sample_mean")
+    @_handle_errors
+    def n_one_sample_mean(
+        delta: float = typer.Option(..., help="Difference from null mean."),
+        sd: float = typer.Option(..., min=0.0, help="Standard deviation."),
+        alpha: float = typer.Option(0.05, min=0.0, max=1.0),
+        power: float = typer.Option(0.80, min=0.0, max=1.0),
+        tail: str = typer.Option("two-sided", help="Alternative hypothesis tail."),
+        test: str = typer.Option("t", help="Test statistic ('z' or 't')."),
+        ni_margin: float | None = typer.Option(None, help="Non-inferiority/equivalence margin."),
+        ni_type: str | None = typer.Option(None, help="Margin type."),
+    ) -> dict[str, Any]:
+        """Sample size for a one-sample mean test."""
+
+        tail_norm = _normalize_choice(tail, _ALLOWED_TAILS, "tail")
+        test_norm = _normalize_choice(test, _ALLOWED_TESTS, "test")
+        ni_type_norm = _normalize_optional(ni_type, _ALLOWED_NI_TYPES, "ni_type")
+        n = api.n_one_sample_mean(
+            delta=delta,
+            sd=sd,
+            alpha=alpha,
+            power=power,
+            tail=tail_norm,
+            test=test_norm,
+            ni_margin=ni_margin,
+            ni_type=ni_type_norm,
+        )
+        return {"n": n}
+
+    @app.command(name="n_paired")
+    @_handle_errors
+    def n_paired(
+        delta: float = typer.Option(..., help="Mean paired difference."),
+        sd_diff: float = typer.Option(..., min=0.0, help="SD of paired differences."),
+        alpha: float = typer.Option(0.05, min=0.0, max=1.0),
+        power: float = typer.Option(0.80, min=0.0, max=1.0),
+        tail: str = typer.Option("two-sided", help="Alternative hypothesis tail."),
+        ni_margin: float | None = typer.Option(None, help="Non-inferiority/equivalence margin."),
+        ni_type: str | None = typer.Option(None, help="Margin type."),
+    ) -> dict[str, Any]:
+        """Sample size for paired mean comparisons."""
+
+        tail_norm = _normalize_choice(tail, _ALLOWED_TAILS, "tail")
+        ni_type_norm = _normalize_optional(ni_type, _ALLOWED_NI_TYPES, "ni_type")
+        n = api.n_paired(
+            delta=delta,
+            sd_diff=sd_diff,
+            alpha=alpha,
+            power=power,
+            tail=tail_norm,
+            ni_margin=ni_margin,
+            ni_type=ni_type_norm,
+        )
+        return {"n": n}
+
+    @app.command(name="n_anova")
+    @_handle_errors
+    def n_anova(
+        k_groups: int = typer.Option(..., min=2, help="Number of groups."),
+        effect_f: float = typer.Option(..., min=0.0, help="Cohen's f effect size."),
+        alpha: float = typer.Option(0.05, min=0.0, max=1.0),
+        power: float = typer.Option(0.80, min=0.0, max=1.0),
+        allocation: str | None = typer.Option(
+            None,
+            help="Comma separated allocation weights (defaults to equal).",
+        ),
+    ) -> dict[str, Any]:
+        """Total sample size for fixed-effects one-way ANOVA."""
+
+        weights = _parse_allocation(allocation)
+        n_total = api.n_anova(
+            k_groups=k_groups,
+            effect_f=effect_f,
+            alpha=alpha,
+            power=power,
+            allocation=weights,
+        )
+        payload: dict[str, Any] = {"n_total": n_total}
+        if weights is not None:
+            payload["allocation"] = weights
+        return payload
+
+    @app.command(name="alpha_adjust")
+    @_handle_errors
+    def alpha_adjust(
+        m: int = typer.Option(..., min=1, help="Number of hypotheses."),
+        alpha: float = typer.Option(0.05, min=0.0, max=1.0),
+        method: str = typer.Option(
+            "bonferroni",
+            help="Adjustment method ('bonferroni' or 'bh').",
+        ),
+    ) -> dict[str, Any]:
+        """Compute family-wise error rate adjustments."""
+
+        method_norm = _normalize_choice(method, _ALLOWED_METHODS, "method")
+        if method_norm == "bonferroni":
+            value = api.alpha_adjust(m=m, alpha=alpha, method="bonferroni")
+            return {"alpha": value}
+        thresholds = api.bh_thresholds(m=m, alpha=alpha)
+        return {"thresholds": thresholds}
+
+    @app.command(name="bh_thresholds")
+    @_handle_errors
+    def bh_thresholds(
+        m: int = typer.Option(..., min=1, help="Number of hypotheses."),
+        alpha: float = typer.Option(0.05, min=0.0, max=1.0),
+    ) -> dict[str, Any]:
+        """Benjamini–Hochberg critical values."""
+
+        thresholds = api.bh_thresholds(m=m, alpha=alpha)
+        return {"thresholds": thresholds}
+
+    def main(argv: list[str] | None = None) -> int:
+        try:
+            app(prog_name="statdesign", args=argv)
+        except SystemExit as exc:  # click raises SystemExit with exit code
+            code = exc.code or 0
+            return int(code) if isinstance(code, int) else 1
+        except KeyboardInterrupt:  # pragma: no cover - CLI interaction
+            typer.echo("Aborted by user", err=True)
+            return 130
+        return 0
+
