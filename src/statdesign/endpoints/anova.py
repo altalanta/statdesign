@@ -1,8 +1,15 @@
-"""One-way ANOVA sample size calculations."""
+"""One-way ANOVA sample size calculations.
+
+The implementation uses the noncentral :math:`F` distribution when SciPy support
+is activated via ``STATDESIGN_AUTO_SCIPY=1``. Otherwise it falls back to a
+normal approximation on the noncentrality parameter, which is accurate for the
+moderate-to-large sample sizes typically encountered in practice but can be
+slightly conservative near the detection boundary.
+"""
 
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from collections.abc import Iterable
 
 from ..core import alloc, ncf, solve
 
@@ -18,7 +25,7 @@ def _validate_inputs(k_groups: int, effect_f: float, alpha: float, power: float)
         raise ValueError("power must be in (0, 1)")
 
 
-def _normalize_allocation(k_groups: int, allocation: Optional[Iterable[float]]) -> list[float]:
+def _normalize_allocation(k_groups: int, allocation: Iterable[float] | None) -> list[float]:
     if allocation is None:
         return [1.0] * k_groups
     weights = list(allocation)
@@ -34,9 +41,15 @@ def n_anova(
     effect_f: float,
     alpha: float = 0.05,
     power: float = 0.80,
-    allocation: Optional[list[float]] = None,
+    allocation: list[float] | None = None,
 ) -> int:
-    """Return total sample size for one-way ANOVA detecting Cohen's ``f``."""
+    """Return total sample size for one-way ANOVA detecting Cohen's ``f``.
+
+    The returned total uses the exact noncentral :math:`F` distribution when
+    SciPy is active and otherwise relies on a normal approximation for the
+    noncentrality parameter. Setting ``STATDESIGN_AUTO_SCIPY=1`` in an
+    environment with SciPy installed restores the exact path.
+    """
 
     _validate_inputs(k_groups, effect_f, alpha, power)
     weights = _normalize_allocation(k_groups, allocation)
@@ -58,3 +71,6 @@ def n_anova(
     lower = k_groups * 2
     n_total = solve.solve_monotone_int(evaluator, power, lower=lower)
     return max(n_total, lower)
+
+
+__all__ = ["n_anova"]

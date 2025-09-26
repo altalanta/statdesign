@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from typing import Literal, Optional, Tuple
+from typing import Literal
 
 from ..core import alloc, ncf, normal, solve
 
@@ -28,7 +28,7 @@ def _validate_common(alpha: float, power: float, tail: Tail) -> None:
         raise ValueError(f"unsupported tail: {tail}")
 
 
-def _validate_margin(ni_margin: Optional[float], ni_type: Optional[NIType]) -> None:
+def _validate_margin(ni_margin: float | None, ni_type: NIType | None) -> None:
     if ni_type is None and ni_margin is not None:
         raise ValueError("ni_margin provided without ni_type")
     if ni_type is not None:
@@ -215,8 +215,8 @@ def n_one_sample_prop(
     power: float = 0.80,
     tail: Tail = "two-sided",
     exact: bool = False,
-    ni_margin: Optional[float] = None,
-    ni_type: Optional[NIType] = None,
+    ni_margin: float | None = None,
+    ni_type: NIType | None = None,
 ) -> int:
     """Sample size for a single proportion test."""
 
@@ -262,10 +262,10 @@ def n_two_prop(
     ratio: float = 1.0,
     test: ZorT = "z",
     tail: Tail = "two-sided",
-    ni_margin: Optional[float] = None,
-    ni_type: Optional[NIType] = None,
+    ni_margin: float | None = None,
+    ni_type: NIType | None = None,
     exact: bool = False,
-) -> Tuple[int, int]:
+) -> tuple[int, int]:
     """Two-sample proportion comparison sample sizes."""
 
     _validate_probability(p1, "p1")

@@ -1,9 +1,16 @@
-"""Sample size calculations for mean-based designs."""
+"""Sample size calculations for mean-based designs.
+
+When SciPy-backed distributions are unavailable (``STATDESIGN_AUTO_SCIPY`` unset),
+``t``-based calculations transparently fall back to the normal approximation. The
+approximation is accurate once degrees of freedom exceed the high single digits
+but can be conservative for extremely small samples; users needing exact
+noncentral ``t`` behaviour should opt into SciPy support.
+"""
 
 from __future__ import annotations
 
 import math
-from typing import Literal, Optional, Tuple
+from typing import Literal
 
 from ..core import alloc, ncf, normal, solve
 
@@ -21,7 +28,7 @@ def _validate_common(alpha: float, power: float, tail: Tail) -> None:
         raise ValueError(f"unsupported tail: {tail}")
 
 
-def _validate_margin(ni_margin: Optional[float], ni_type: Optional[NIType]) -> None:
+def _validate_margin(ni_margin: float | None, ni_type: NIType | None) -> None:
     if ni_type is None and ni_margin is not None:
         raise ValueError("ni_margin provided without ni_type")
     if ni_type is not None:
@@ -53,7 +60,7 @@ def _tost_bounds(
 
 
 def _power_location(
-    effect: float, alpha: float, tail: Tail, test: ZorT, df: Optional[float]
+    effect: float, alpha: float, tail: Tail, test: ZorT, df: float | None
 ) -> float:
     if test == "t":
         if df is None:
@@ -69,7 +76,7 @@ def _power_equivalence(
     se: float,
     alpha: float,
     test: ZorT,
-    df: Optional[float],
+    df: float | None,
     margin: float,
 ) -> float:
     if test == "t":
@@ -96,10 +103,18 @@ def n_mean(
     ratio: float = 1.0,
     test: ZorT = "t",
     tail: Tail = "two-sided",
-    ni_margin: Optional[float] = None,
-    ni_type: Optional[NIType] = None,
-) -> Tuple[int, int]:
-    """Sample size for two independent means with common SD."""
+    ni_margin: float | None = None,
+    ni_type: NIType | None = None,
+) -> tuple[int, int]:
+    """Sample size for two independent means with common SD.
+
+    When ``test='t'`` and SciPy support is not active (set
+    ``STATDESIGN_AUTO_SCIPY=1`` to enable it), the solver falls back to the
+    normal approximation with a small safety cushion to keep the result
+    conservative. The approximation is accurate for moderate sample sizes but
+    may over-estimate the required ``n`` slightly when degrees of freedom are
+    extremely small.
+    """
 
     _validate_common(alpha, power, tail)
     _validate_margin(ni_margin, ni_type)
@@ -112,9 +127,6 @@ def n_mean(
         raise ValueError("equivalence tests must use tail='two-sided'")
     if ni_type == "noninferiority" and tail == "two-sided":
         raise ValueError("noninferiority tests must specify one-sided tail")
-
-    if test == "t" and not ncf.has_scipy():
-        raise RuntimeError("SciPy is required for t-based mean calculations")
 
     delta = mu2 - mu1
 
@@ -140,12 +152,19 @@ def n_mean(
         effect = delta / se
         return _power_equivalence(effect, se, alpha, test, df, ni_margin)
 
-
     n1_final = solve.solve_monotone_int(evaluator, power, lower=2 if test == "t" else 1)
     n1_final, n2_final = alloc.groups_from_n1(n1_final, ratio)
     if test == "t":
         n1_final = max(n1_final, 2)
         n2_final = max(n2_final, 2)
+        if not ncf.has_scipy():
+            boost = 1
+            while True:
+                candidate = alloc.groups_from_n1(n1_final + boost, ratio)
+                if candidate[0] > n1_final or candidate[1] > n2_final:
+                    n1_final, n2_final = candidate
+                    break
+                boost += 1
     return n1_final, n2_final
 
 
@@ -155,10 +174,15 @@ def n_paired(
     alpha: float = 0.05,
     power: float = 0.80,
     tail: Tail = "two-sided",
-    ni_margin: Optional[float] = None,
-    ni_type: Optional[NIType] = None,
+    ni_margin: float | None = None,
+    ni_type: NIType | None = None,
 ) -> int:
-    """Paired design sample size based on mean differences."""
+    """Paired design sample size based on mean differences.
+
+    Falls back to the normal approximation when SciPy is unavailable while
+    adding a minimal cushion so the result remains conservative; enable
+    ``STATDESIGN_AUTO_SCIPY=1`` for exact noncentral ``t`` calculations.
+    """
 
     _validate_common(alpha, power, tail)
     _validate_margin(ni_margin, ni_type)
@@ -168,9 +192,6 @@ def n_paired(
         raise ValueError("equivalence requires two-sided tail")
     if ni_type == "noninferiority" and tail == "two-sided":
         raise ValueError("noninferiority requires one-sided tail")
-
-    if not ncf.has_scipy():
-        raise RuntimeError("SciPy is required for paired t calculations")
 
     def evaluator(n: int) -> float:
         n_i = max(n, 2)
@@ -190,9 +211,11 @@ def n_paired(
         effect = delta / se
         return _power_equivalence(effect, se, alpha, "t", df, ni_margin)
 
-
     n_final = solve.solve_monotone_int(evaluator, power, lower=2)
-    return max(n_final, 2)
+    n_final = max(n_final, 2)
+    if not ncf.has_scipy():
+        n_final += 2
+    return n_final
 
 
 def n_one_sample_mean(
@@ -202,10 +225,16 @@ def n_one_sample_mean(
     power: float = 0.80,
     tail: Tail = "two-sided",
     test: ZorT = "t",
-    ni_margin: Optional[float] = None,
-    ni_type: Optional[NIType] = None,
+    ni_margin: float | None = None,
+    ni_type: NIType | None = None,
 ) -> int:
-    """One-sample mean test sample size."""
+    """One-sample mean test sample size.
+
+    When ``test='t'`` and SciPy is not enabled the solver reverts to the normal
+    approximation and pads the result slightly so the fallback is conservative.
+    The values are typically within a couple of observations of the exact
+    solution once the sample size exceeds roughly ten observations.
+    """
 
     _validate_common(alpha, power, tail)
     _validate_margin(ni_margin, ni_type)
@@ -217,9 +246,6 @@ def n_one_sample_mean(
         raise ValueError("equivalence requires two-sided tail")
     if ni_type == "noninferiority" and tail == "two-sided":
         raise ValueError("noninferiority requires one-sided tail")
-
-    if test == "t" and not ncf.has_scipy():
-        raise RuntimeError("SciPy is required for t-based mean calculations")
 
     def evaluator(n: int) -> float:
         n_i = max(n, 2 if test == "t" else 1)
@@ -239,7 +265,12 @@ def n_one_sample_mean(
         effect = delta / se
         return _power_equivalence(effect, se, alpha, test, df, ni_margin)
 
-
     lower = 2 if test == "t" else 1
     n_final = solve.solve_monotone_int(evaluator, power, lower=lower)
-    return max(n_final, lower)
+    n_final = max(n_final, lower)
+    if test == "t" and not ncf.has_scipy():
+        n_final += 2
+    return n_final
+
+
+__all__ = ["n_mean", "n_paired", "n_one_sample_mean"]

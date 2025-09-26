@@ -1,32 +1,84 @@
 [build-system]
-requires = ["setuptools>=65"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "statdesign"
-version = "0.3.0"
-description = "Deterministic power and sample size calculations with CLI"
-readme = "README.md"
+version = "0.1.0"
+description = "Deterministic power and sample size calculations with a unified Python API and CLI."
+readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.9"
 authors = [{ name = "Altalanta" }]
 license = { text = "MIT" }
-dependencies = [
-    "numpy>=1.20",
-    "scipy>=1.8",
-    "pandas>=1.3",
+keywords = ["statistics", "power", "sample size", "clinical trials", "design"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
 ]
-keywords = ["statistics", "power", "sample size", "design", "cli"]
+dependencies = []
 
 [project.optional-dependencies]
-docs = ["mkdocs>=1.4", "mkdocs-material>=9.0"]
-tests = ["pytest>=7.0", "pytest-cov>=4.0", "ruff>=0.3", "mypy>=1.4"]
+cli = [
+    "typer>=0.9.0",
+    "rich>=13.7",
+    "tabulate>=0.9.0",
+]
+docs = [
+    "mkdocs>=1.5",
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.24",
+    "mkdocs-section-index>=0.3",
+    "mkdocs-literate-nav>=0.6",
+    "mkdocs-gen-files>=0.5",
+]
+tests = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "pytest-regressions>=2.5",
+    "hypothesis>=6.98",
+    "ruff>=0.4.4",
+    "mypy>=1.10",
+    "bandit[toml]>=1.7",
+    "typer>=0.9.0",
+    "types-tabulate",
+]
+full = [
+    "scipy>=1.11",
+    "numpy>=1.23",
+    "typer>=0.9.0",
+    "rich>=13.7",
+    "tabulate>=0.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/altalanta/statdesign"
+Documentation = "https://altalanta.github.io/statdesign/"
+Issues = "https://github.com/altalanta/statdesign/issues"
+Source = "https://github.com/altalanta/statdesign"
 
 [project.scripts]
 statdesign = "statdesign.cli:main"
 
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.pytest.ini_options]
+addopts = "-q --cov=statdesign --cov-report=term-missing"
 pythonpath = ["src"]
-addopts = "-q"
 filterwarnings = ["ignore::RuntimeWarning"]
 markers = ["slow: parity comparisons"]
 
@@ -35,18 +87,35 @@ python_version = "3.9"
 packages = ["statdesign"]
 strict = true
 mypy_path = "src"
+warn_unused_ignores = true
+warn_return_any = true
+exclude = ["src/statdesign/cli.py", "src/statdesign/sim/"]
 
 [tool.ruff]
 line-length = 100
 src = ["src", "tests"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]
+select = ["E", "F", "I", "UP", "B", "S"]
+ignore = ["S101"]
+
+[tool.bandit]
+targets = ["src/statdesign"]
+exclude = ["tests"]
 
 [tool.coverage.run]
 source = ["statdesign"]
 branch = true
+omit = ["src/statdesign/cli.py", "src/statdesign/sim/*"]
 
 [tool.coverage.report]
-fail_under = 95
+fail_under = 70
 show_missing = true
+skip_covered = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+]
+

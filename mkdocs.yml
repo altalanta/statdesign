@@ -1,17 +1,60 @@
 site_name: statdesign
 site_url: https://altalanta.github.io/statdesign/
+site_description: Deterministic power and sample size calculations with Python API and CLI
+repo_url: https://github.com/altalanta/statdesign
+repo_name: altalanta/statdesign
+
 theme:
   name: material
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
 nav:
-  - Overview: index.md
+  - Home: index.md
+  - Installation: install.md
+  - Quickstart: quickstart.md
+  - CLI: cli.md
+  - API Reference: api.md
   - Usage: usage.md
-  - Approximations: approximations.md
   - Parity Tables:
       - parity/README.md
+
 plugins:
   - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: false
+            show_root_heading: true
+            heading_level: 2
+
 markdown_extensions:
   - admonition
+  - attr_list
+  - md_in_html
   - tables
   - toc:
       permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
