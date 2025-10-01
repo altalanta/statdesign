@@ -88,7 +88,7 @@ for row in _rows("means_two_sample_golden.csv"):
 
     globals()[
         f"test_two_sample_means_{row['test'] or 't'}_{_slug(row['mu1'])}_{_slug(row['mu2'])}"
-    ] = (lambda r=row: _make_two_sample(r))
+    ] = lambda r=row: _make_two_sample(r)
 
 
 for row in _rows("one_sample_mean_golden.csv"):
@@ -103,9 +103,9 @@ for row in _rows("one_sample_mean_golden.csv"):
         result = api.n_one_sample_mean(**options)
         _assert_one_sample_result(result, r)
 
-    globals()[
-        f"test_one_sample_mean_{row.get('test') or 't'}_{_slug(row['delta'])}"
-    ] = (lambda r=row: _make_one_sample(r))
+    globals()[f"test_one_sample_mean_{row.get('test') or 't'}_{_slug(row['delta'])}"] = (
+        lambda r=row: _make_one_sample(r)
+    )
 
 
 for row in _rows("paired_mean_golden.csv"):
@@ -119,4 +119,4 @@ for row in _rows("paired_mean_golden.csv"):
         result = api.n_paired(**options)
         _assert_paired_result(result, r)
 
-    globals()[f"test_paired_mean_{_slug(row['delta'])}"] = (lambda r=row: _make_paired(r))
+    globals()[f"test_paired_mean_{_slug(row['delta'])}"] = lambda r=row: _make_paired(r)

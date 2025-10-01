@@ -2,18 +2,17 @@
 
 from __future__ import annotations
 
-import importlib
 import math
-import os
-from types import ModuleType
 from typing import Literal
 
+from .._scipy_backend import has_scipy, require_scipy
 from . import normal
 
 Tail = Literal["two-sided", "greater", "less"]
 
 
 def _chi2_ppf(prob: float, df: float) -> float:
+    """Chi-squared percent point function using Wilson-Hilferty approximation."""
     if df <= 0:
         raise ValueError("degrees of freedom must be positive")
     z = normal.ppf(prob)
@@ -21,35 +20,9 @@ def _chi2_ppf(prob: float, df: float) -> float:
     return df * (term**3)
 
 
-_STATS: ModuleType | None = None
-_SCIPY_ERROR: Exception | None = None
-
-
-def _maybe_import_scipy() -> None:
-    global _STATS, _SCIPY_ERROR
-    if _STATS is not None or _SCIPY_ERROR is not None:
-        return
-    if os.environ.get("STATDESIGN_AUTO_SCIPY", "0") != "1":
-        return
-    try:
-        _STATS = importlib.import_module("scipy.stats")
-    except Exception as exc:  # pragma: no cover - depends on user env
-        _SCIPY_ERROR = exc
-
-
-def has_scipy() -> bool:
-    _maybe_import_scipy()
-    return _STATS is not None
-
-
-def _get_stats() -> ModuleType:
-    _maybe_import_scipy()
-    if _STATS is None:
-        raise RuntimeError(
-            "SciPy is required for this calculation. Set STATDESIGN_AUTO_SCIPY=1 "
-            "in an environment with compatible SciPy to enable."
-        )
-    return _STATS
+def _get_stats():
+    """Get scipy.stats module, raising helpful error if not available."""
+    return require_scipy("Noncentral distributions")
 
 
 def power_normal(delta: float, alpha: float, tail: Tail) -> float:

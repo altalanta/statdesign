@@ -239,19 +239,19 @@ class TestIntegration:
         """Test typical workflow for cluster randomized trial design."""
         # Calculate individual-level sample size (would normally come from power calculation)
         n_individual = 200
-        
+
         # Calculate design effect for equal clusters
         m = 15  # cluster size
         icc = 0.05
         de = design_effects.design_effect_cluster_equal(m=m, icc=icc)
-        
+
         # Inflate sample size
         n_total = design_effects.inflate_n_by_de(n_individual, de)
-        
+
         # Verify calculation
         expected_de = 1.0 + (15 - 1) * 0.05  # 1.7
         expected_n = math.ceil(200 * expected_de)  # ceil(340) = 340
-        
+
         assert de == expected_de
         assert n_total == expected_n
 
@@ -261,14 +261,14 @@ class TestIntegration:
         mbar = 12.0
         icc = 0.08
         cv = 0.4
-        
+
         de = design_effects.design_effect_cluster_unequal(mbar=mbar, icc=icc, cv=cv)
         n_total = design_effects.inflate_n_by_de(n_individual, de)
-        
+
         # Verify the unequal clusters give larger DE than equal clusters
         de_equal = design_effects.design_effect_cluster_equal(m=mbar, icc=icc)
         assert de > de_equal
-        
+
         # Should be positive inflation
         assert n_total > n_individual
 
@@ -277,10 +277,10 @@ class TestIntegration:
         n_individual = 80
         k = 6  # number of repeated measures
         icc = 0.4
-        
+
         de = design_effects.design_effect_repeated_cs(k=k, icc=icc)
         n_total = design_effects.inflate_n_by_de(n_individual, de)
-        
+
         # With high ICC and many measurements, should have substantial inflation
         assert de > 2.0  # Should be > 1 + (6-1)*0.4 = 3.0
         assert n_total > 2 * n_individual

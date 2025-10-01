@@ -3,7 +3,7 @@ Name: statdesign
 Version: 0.1.0
 Summary: Deterministic power and sample size calculations with a unified Python API and CLI.
 Author: Altalanta
-License: MIT
+License-Expression: MIT
 Project-URL: Homepage, https://github.com/altalanta/statdesign
 Project-URL: Documentation, https://altalanta.github.io/statdesign/
 Project-URL: Issues, https://github.com/altalanta/statdesign/issues
@@ -20,10 +20,12 @@ Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
-Classifier: License :: OSI Approved :: MIT License
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Provides-Extra: scipy
+Requires-Dist: scipy>=1.11; extra == "scipy"
+Requires-Dist: numpy>=1.23; extra == "scipy"
 Provides-Extra: cli
 Requires-Dist: typer>=0.9.0; extra == "cli"
 Requires-Dist: rich>=13.7; extra == "cli"
@@ -39,12 +41,32 @@ Provides-Extra: tests
 Requires-Dist: pytest>=7.4; extra == "tests"
 Requires-Dist: pytest-cov>=4.1; extra == "tests"
 Requires-Dist: pytest-regressions>=2.5; extra == "tests"
+Requires-Dist: pytest-benchmark>=4.0; extra == "tests"
 Requires-Dist: hypothesis>=6.98; extra == "tests"
 Requires-Dist: ruff>=0.4.4; extra == "tests"
 Requires-Dist: mypy>=1.10; extra == "tests"
 Requires-Dist: bandit[toml]>=1.7; extra == "tests"
 Requires-Dist: typer>=0.9.0; extra == "tests"
 Requires-Dist: types-tabulate; extra == "tests"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4; extra == "dev"
+Requires-Dist: pytest-cov>=4.1; extra == "dev"
+Requires-Dist: pytest-regressions>=2.5; extra == "dev"
+Requires-Dist: pytest-benchmark>=4.0; extra == "dev"
+Requires-Dist: hypothesis>=6.98; extra == "dev"
+Requires-Dist: ruff>=0.4.4; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
+Requires-Dist: bandit[toml]>=1.7; extra == "dev"
+Requires-Dist: typer>=0.9.0; extra == "dev"
+Requires-Dist: types-tabulate; extra == "dev"
+Requires-Dist: mkdocs>=1.5; extra == "dev"
+Requires-Dist: mkdocs-material>=9.5; extra == "dev"
+Requires-Dist: mkdocstrings[python]>=0.24; extra == "dev"
+Requires-Dist: mkdocs-section-index>=0.3; extra == "dev"
+Requires-Dist: mkdocs-literate-nav>=0.6; extra == "dev"
+Requires-Dist: mkdocs-gen-files>=0.5; extra == "dev"
+Requires-Dist: build>=0.10; extra == "dev"
+Requires-Dist: twine>=4.0; extra == "dev"
 Provides-Extra: full
 Requires-Dist: scipy>=1.11; extra == "full"
 Requires-Dist: numpy>=1.23; extra == "full"

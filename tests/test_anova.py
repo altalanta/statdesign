@@ -50,6 +50,6 @@ for row in _rows("anova_golden.csv"):
         )
         _assert_match(result, int(r["exp_n"]))
 
-    globals()[f"test_one_way_anova_{row['k_groups']}_{row['effect_f']}"] = (
-        lambda r=row: _make_test(r)
+    globals()[f"test_one_way_anova_{row['k_groups']}_{row['effect_f']}"] = lambda r=row: _make_test(
+        r
     )
