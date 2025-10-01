@@ -21,13 +21,12 @@ theme:
 
 nav:
   - Home: index.md
-  - Installation: install.md
   - Quickstart: quickstart.md
-  - CLI: cli.md
+  - CLI Usage: cli.md
   - API Reference: api.md
-  - Usage: usage.md
-  - Parity Tables:
-      - parity/README.md
+  - Math Notes: math.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
 
 plugins:
   - search

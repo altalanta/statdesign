@@ -4,10 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from statdesign import api
+from statdesign import api, multiplicity
 from statdesign.core import ncf, normal, solve
 from statdesign.endpoints import anova, means, proportions
-from statdesign import multiplicity
 
 
 class TestAPIEdgeCases:
@@ -106,6 +105,7 @@ class TestSolveModule:
 
     def test_solve_monotone_int_edge_cases(self) -> None:
         """Test integer solver edge cases."""
+
         # Simple increasing function
         def simple_func(n: int) -> float:
             return n / 100.0
@@ -122,6 +122,7 @@ class TestSolveModule:
 
     def test_solve_validation(self) -> None:
         """Test solver input validation."""
+
         def dummy_func(n: int) -> float:
             return 0.5
 

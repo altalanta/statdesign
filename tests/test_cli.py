@@ -67,13 +67,15 @@ def test_cli_alpha_adjust_table(file_regression) -> None:
 
 @pytest.mark.usefixtures("reset_cli_state")
 def test_cli_invalid_probability() -> None:
-    code, out, err = run_cli([
-        "n_two_prop",
-        "--p1",
-        "-0.1",
-        "--p2",
-        "0.5",
-    ])
+    code, out, err = run_cli(
+        [
+            "n_two_prop",
+            "--p1",
+            "-0.1",
+            "--p2",
+            "0.5",
+        ]
+    )
     assert code == 2
     assert out == ""
     assert "0.0<=x<=1.0" in err

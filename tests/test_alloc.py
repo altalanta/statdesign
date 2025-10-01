@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import math
-
 import pytest
 
 from statdesign.core import alloc
@@ -296,14 +294,14 @@ class TestHarmonicMean:
         """Test simple harmonic mean calculation."""
         # Harmonic mean of [2, 4] = 2 / (1/2 + 1/4) = 2 / (0.75) = 8/3 ≈ 2.67
         result = alloc.harmonic_mean([2, 4])
-        expected = 2 / (1/2 + 1/4)
+        expected = 2 / (1 / 2 + 1 / 4)
         assert abs(result - expected) < 1e-10
 
     def test_three_values(self) -> None:
         """Test harmonic mean of three values."""
         # Harmonic mean of [1, 2, 3] = 3 / (1/1 + 1/2 + 1/3) = 3 / (1 + 0.5 + 0.333...) ≈ 1.636
         result = alloc.harmonic_mean([1, 2, 3])
-        expected = 3 / (1 + 0.5 + 1/3)
+        expected = 3 / (1 + 0.5 + 1 / 3)
         assert abs(result - expected) < 1e-10
 
     def test_single_value(self) -> None:
@@ -322,7 +320,7 @@ class TestHarmonicMean:
     def test_small_values(self) -> None:
         """Test harmonic mean with small values."""
         result = alloc.harmonic_mean([0.1, 0.2, 0.3])
-        expected = 3 / (1/0.1 + 1/0.2 + 1/0.3)
+        expected = 3 / (1 / 0.1 + 1 / 0.2 + 1 / 0.3)
         assert abs(result - expected) < 1e-10
 
     def test_extreme_difference(self) -> None:
@@ -336,7 +334,7 @@ class TestHarmonicMean:
     def test_fractional_values(self) -> None:
         """Test harmonic mean with fractional values."""
         result = alloc.harmonic_mean([1.5, 2.5, 3.5])
-        expected = 3 / (1/1.5 + 1/2.5 + 1/3.5)
+        expected = 3 / (1 / 1.5 + 1 / 2.5 + 1 / 3.5)
         assert abs(result - expected) < 1e-10
 
     def test_empty_values(self) -> None:
@@ -365,10 +363,10 @@ class TestIntegration:
         ratio = 1.5
         n1_result, n2_result = alloc.groups_from_n1(n1_orig, ratio)
         total = n1_result + n2_result
-        
+
         # Convert back using groups_from_total
         n1_back, n2_back = alloc.groups_from_total(total, ratio)
-        
+
         # Should be reasonably close to original
         assert abs(n1_back - n1_result) <= 1
         assert abs(n2_back - n2_result) <= 1
@@ -378,13 +376,13 @@ class TestIntegration:
         """Test allocate_by_weights matches ratio-based allocation."""
         total = 30
         ratio = 2.0  # n2 = 2 * n1
-        
+
         # Using ratio method
         n1_ratio, n2_ratio = alloc.groups_from_total(total, ratio)
-        
+
         # Using weights method (weight2 = 2 * weight1)
         weights_result = alloc.allocate_by_weights(total, [1, 2])
-        
+
         # Should be close
         assert abs(weights_result[0] - n1_ratio) <= 1
         assert abs(weights_result[1] - n2_ratio) <= 1
@@ -394,14 +392,14 @@ class TestIntegration:
         # Allocate 60 participants to 4 groups with different weights
         weights = [1, 2, 3, 4]
         group_sizes = alloc.allocate_by_weights(60, weights)
-        
+
         # Calculate harmonic mean
         h_mean = alloc.harmonic_mean(group_sizes)
-        
+
         # Harmonic mean should be less than arithmetic mean
         arith_mean = sum(group_sizes) / len(group_sizes)
         assert h_mean < arith_mean
-        
+
         # Should be positive and less than arithmetic mean
         assert h_mean > 0
         assert h_mean < arith_mean
@@ -412,11 +410,11 @@ class TestIntegration:
         n1, n2 = alloc.groups_from_total(2, 1.0)
         assert n1 == 1
         assert n2 == 1
-        
+
         # Harmonic mean of [1, 1]
         h_mean = alloc.harmonic_mean([n1, n2])
         assert h_mean == 1.0
-        
+
         # Allocate by weights should give same result
         weights_result = alloc.allocate_by_weights(2, [1, 1])
         assert weights_result == [1, 1]
