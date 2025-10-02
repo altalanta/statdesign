@@ -60,6 +60,9 @@ def nct_cdf(x: float, df: float, delta: float) -> float:
 
 def power_noncentral_f(lambda_: float, df_num: float, df_den: float, alpha: float) -> float:
     if not has_scipy():
+        # Add numerical stability guards
+        if df_num <= 0 or df_den <= 0 or lambda_ < 0:
+            raise ValueError("ncf: invalid degrees of freedom or noncentrality parameter")
         if lambda_ <= 0.0:
             return 0.0
         crit_num = _chi2_ppf(1.0 - alpha, df_num)
@@ -68,9 +71,8 @@ def power_noncentral_f(lambda_: float, df_num: float, df_den: float, alpha: floa
             return 0.0
         crit = (df_den * crit_num) / (df_num * crit_den)
         mean = df_num + lambda_
-        var = 2.0 * (df_num + 2.0 * lambda_)
-        if var <= 0.0:
-            return 0.0
+        # Ensure variance is positive for numerical stability
+        var = max(2.0 * (df_num + 2.0 * lambda_), 1e-12)
         z = (mean - crit * df_num) / math.sqrt(var)
         return float(normal.sf(-z))
     stats = _get_stats()
