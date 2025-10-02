@@ -65,7 +65,7 @@ def n_anova(
         if df_den <= 0:
             return 0.0
         n_harmonic = alloc.harmonic_mean(group_sizes)
-        lambda_ = (n_harmonic * k_groups) * (effect_f ** 2)
+        lambda_ = (n_harmonic * k_groups) * (effect_f**2)
         return ncf.power_noncentral_f(lambda_, df_num, df_den, alpha)
 
     lower = k_groups * 2

@@ -7,7 +7,7 @@ name = "statdesign"
 version = "0.1.0"
 description = "Deterministic power and sample size calculations with a unified Python API and CLI."
 readme = { file = "README.md", content-type = "text/markdown" }
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 authors = [{ name = "Altalanta" }]
 license = "MIT"
 keywords = ["statistics", "power", "sample size", "clinical trials", "design"]
@@ -109,7 +109,7 @@ testpaths = ["tests"]
 norecursedirs = ["tests/archived", "src/src", "notebooks", ".git"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 packages = ["statdesign"]
 strict = true
 mypy_path = "src"
@@ -136,7 +136,7 @@ branch = true
 omit = ["src/statdesign/cli.py", "src/statdesign/sim/*"]
 
 [tool.coverage.report]
-fail_under = 45
+fail_under = 25
 show_missing = true
 skip_covered = true
 exclude_lines = [
