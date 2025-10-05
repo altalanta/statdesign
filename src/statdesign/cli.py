@@ -10,10 +10,11 @@ from typing import Any, Callable
 try:  # Import Typer lazily so the library install stays lightweight.
     import typer
 except ModuleNotFoundError:  # pragma: no cover - exercised only when CLI extra missing
+
     def main(argv: list[str] | None = None) -> int:
         sys.stderr.write(
             "statdesign CLI requires the optional 'cli' dependencies.\n"
-            "Install with `pip install \"statdesign[cli]\"` and retry.\n"
+            'Install with `pip install "statdesign[cli]"` and retry.\n'
         )
         return 1
 else:
@@ -141,6 +142,24 @@ else:
             return None
         return _normalize_choice(value, allowed, name)
 
+    def _validate_probability(value: float, name: str) -> float:
+        """Validate that a value is a valid probability."""
+        if not (0.0 <= value <= 1.0):
+            raise ValueError(f"{name} must be between 0 and 1, got {value}")
+        return value
+
+    def _validate_positive(value: float, name: str) -> float:
+        """Validate that a value is positive."""
+        if value <= 0:
+            raise ValueError(f"{name} must be positive, got {value}")
+        return value
+
+    def _validate_sample_size(value: int, name: str) -> int:
+        """Validate that a sample size is at least 2."""
+        if value < 2:
+            raise ValueError(f"{name} must be at least 2, got {value}")
+        return value
+
     @app.callback()
     def _configure(
         json_output: bool = typer.Option(
@@ -154,8 +173,19 @@ else:
             "--table/--no-table",
             help="Emit a table rendering of the results.",
         ),
+        version: bool = typer.Option(
+            False,
+            "--version",
+            help="Show version and exit.",
+        ),
     ) -> None:
         """Configure global output preferences."""
+
+        if version:
+            from . import __version__
+
+            typer.echo(f"statdesign {__version__}")
+            raise Exit(0)
 
         global _SETTINGS
         settings = OutputSettings(json=json_output, table=table_output)
@@ -181,21 +211,47 @@ else:
     def n_two_prop(
         p1: float = typer.Option(..., min=0.0, max=1.0, help="Proportion for group 1."),
         p2: float = typer.Option(..., min=0.0, max=1.0, help="Proportion for group 2."),
-        alpha: float = typer.Option(0.05, min=0.0, max=1.0, help="Type I error rate."),
-        power: float = typer.Option(0.80, min=0.0, max=1.0, help="Target power."),
-        ratio: float = typer.Option(1.0, min=0.0, help="Allocation ratio n2/n1."),
-        test: str = typer.Option("z", help="Test statistic ('z' or 't')."),
-        tail: str = typer.Option("two-sided", help="Alternative hypothesis tail."),
+        alpha: float = typer.Option(
+            0.05, min=0.0, max=1.0, help="Type I error rate (default: 0.05)."
+        ),
+        power: float = typer.Option(0.80, min=0.0, max=1.0, help="Target power (default: 0.80)."),
+        ratio: float = typer.Option(1.0, min=0.0, help="Allocation ratio n2/n1 (default: 1.0)."),
+        test: str = typer.Option("z", help="Test statistic: 'z' or 't' (default: 'z')."),
+        tail: str = typer.Option(
+            "two-sided", help="Alternative: 'two-sided', 'greater', 'less' (default: 'two-sided')."
+        ),
         ni_margin: float | None = typer.Option(None, help="Non-inferiority or equivalence margin."),
-        ni_type: str | None = typer.Option(None, help="Margin type."),
-        exact: bool = typer.Option(False, help="Toggle exact small-sample test."),
+        ni_type: str | None = typer.Option(
+            None, help="Margin type: 'noninferiority' or 'equivalence'."
+        ),
+        exact: bool = typer.Option(
+            False, help="Use exact small-sample test instead of approximation."
+        ),
+        ci: bool = typer.Option(
+            False, "--ci", help="Include confidence interval assumptions in output."
+        ),
     ) -> dict[str, Any]:
-        """Sample size for two independent proportions."""
+        """
+        Sample size for two independent proportions.
+
+        Examples:
+          statdesign n_two_prop --p1 0.6 --p2 0.5 --alpha 0.05 --power 0.8
+          statdesign n_two_prop --p1 0.3 --p2 0.4 --ratio 2.0 --tail greater
+        """
 
         from . import api  # Import api types locally
+
+        # Validate inputs
+        _validate_probability(p1, "p1")
+        _validate_probability(p2, "p2")
+        _validate_probability(alpha, "alpha")
+        _validate_probability(power, "power")
+        _validate_positive(ratio, "ratio")
+
         test_norm = _normalize_choice(test, _ALLOWED_TESTS, "test")
         tail_norm = _normalize_choice(tail, _ALLOWED_TAILS, "tail")
         ni_type_norm = _normalize_optional(ni_type, _ALLOWED_NI_TYPES, "ni_type")
+
         n1, n2 = api.n_two_prop(
             p1=p1,
             p2=p2,
@@ -208,7 +264,20 @@ else:
             ni_type=ni_type_norm,  # type: ignore
             exact=exact,
         )
-        return {"n1": n1, "n2": n2}
+
+        result = {"n1": n1, "n2": n2}
+
+        if ci:
+            result["assumptions"] = {
+                "test": test_norm,
+                "tail": tail_norm,
+                "alpha": alpha,
+                "power": power,
+                "exact": exact,
+                "effect_size": abs(p1 - p2),
+            }
+
+        return result
 
     @app.command(name="n_one_sample_prop")
     @_handle_errors
@@ -383,6 +452,129 @@ else:
         thresholds = api.bh_thresholds(m=m, alpha=alpha)
         return {"thresholds": thresholds}
 
+    def generate_cli_schema() -> dict[str, Any]:
+        """Generate JSON schema for CLI output validation."""
+        return {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "StatDesign CLI Output Schema",
+            "description": "JSON schema for validating statdesign CLI command outputs",
+            "version": "v1",
+            "type": "object",
+            "definitions": {
+                "sample_size_result": {
+                    "type": "object",
+                    "properties": {
+                        "n1": {"type": "integer", "minimum": 1},
+                        "n2": {"type": "integer", "minimum": 1},
+                        "assumptions": {
+                            "type": "object",
+                            "properties": {
+                                "test": {"type": "string", "enum": ["z", "t"]},
+                                "tail": {"type": "string", "enum": ["two-sided", "greater", "less"]},
+                                "alpha": {"type": "number", "minimum": 0, "maximum": 1},
+                                "power": {"type": "number", "minimum": 0, "maximum": 1},
+                                "exact": {"type": "boolean"},
+                                "effect_size": {"type": "number", "minimum": 0}
+                            }
+                        }
+                    },
+                    "required": ["n1", "n2"],
+                    "additionalProperties": False
+                },
+                "single_sample_size_result": {
+                    "type": "object",
+                    "properties": {
+                        "n": {"type": "integer", "minimum": 1}
+                    },
+                    "required": ["n"],
+                    "additionalProperties": False
+                },
+                "anova_result": {
+                    "type": "object",
+                    "properties": {
+                        "n_total": {"type": "integer", "minimum": 2},
+                        "allocation": {
+                            "type": "array",
+                            "items": {"type": "number", "minimum": 0},
+                            "minItems": 1
+                        }
+                    },
+                    "required": ["n_total"],
+                    "additionalProperties": False
+                },
+                "alpha_adjust_result": {
+                    "type": "object",
+                    "properties": {
+                        "alpha": {"type": "number", "minimum": 0, "maximum": 1}
+                    },
+                    "required": ["alpha"],
+                    "additionalProperties": False
+                },
+                "bh_thresholds_result": {
+                    "type": "object",
+                    "properties": {
+                        "thresholds": {
+                            "type": "array",
+                            "items": {"type": "number", "minimum": 0, "maximum": 1},
+                            "minItems": 1
+                        }
+                    },
+                    "required": ["thresholds"],
+                    "additionalProperties": False
+                }
+            },
+            "oneOf": [
+                {"$ref": "#/definitions/sample_size_result"},
+                {"$ref": "#/definitions/single_sample_size_result"},
+                {"$ref": "#/definitions/anova_result"},
+                {"$ref": "#/definitions/alpha_adjust_result"},
+                {"$ref": "#/definitions/bh_thresholds_result"}
+            ]
+        }
+
+    @app.command(name="cli-schema")
+    @_handle_errors
+    def cli_schema(
+        version: str = typer.Option("v1", help="Schema version to output.")
+    ) -> dict[str, Any]:
+        """Output JSON schema for CLI validation."""
+        if version != "v1":
+            raise ValueError(f"Unsupported schema version: {version}")
+        return generate_cli_schema()
+
+    @app.command(name="validate")
+    def validate_output(
+        input_file: str = typer.Argument("-", help="Input file ('-' for stdin)"),
+        version: str = typer.Option("v1", help="Schema version to use"),
+        quiet: bool = typer.Option(False, help="Suppress success messages")
+    ) -> None:
+        """Validate CLI output against JSON schema."""
+        try:
+            from .validation import validate_cli_output_string
+        except ImportError:
+            _fail("jsonschema package required. Install with: pip install jsonschema")
+        
+        # Read input
+        if input_file == "-":
+            import sys
+            content = sys.stdin.read()
+        else:
+            try:
+                with open(input_file) as f:
+                    content = f.read()
+            except FileNotFoundError:
+                _fail(f"File not found: {input_file}")
+            except Exception as e:
+                _fail(f"Error reading file: {e}")
+        
+        # Validate
+        try:
+            validate_cli_output_string(content.strip(), version)
+            if not quiet:
+                typer.echo("✓ Validation passed", err=True)
+        except Exception as e:
+            _fail(f"Validation failed: {e}")
+
     def main(argv: list[str] | None = None) -> int:
         try:
             app(prog_name="statdesign", args=argv)
@@ -393,4 +585,3 @@ else:
             typer.echo("Aborted by user", err=True)
             return 130
         return 0
-

@@ -1,4 +1,5 @@
 """I/O helpers for targetdb-mini."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -17,7 +18,9 @@ class CohortData:
     phenotypes: pd.DataFrame
 
 
-def load_cohort(genotype_path: Path, snp_path: Path, covariate_path: Path, phenotype_path: Path) -> CohortData:
+def load_cohort(
+    genotype_path: Path, snp_path: Path, covariate_path: Path, phenotype_path: Path
+) -> CohortData:
     """Load cohort data from disk."""
 
     genotypes = np.load(genotype_path)

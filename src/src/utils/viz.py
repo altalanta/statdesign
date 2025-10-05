@@ -1,15 +1,18 @@
 """Plotting utilities using matplotlib."""
+
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 
-def manhattan_plot(df: pd.DataFrame, chrom_col: str, pos_col: str, p_col: str, out_path: Path) -> None:
+def manhattan_plot(
+    df: pd.DataFrame, chrom_col: str, pos_col: str, p_col: str, out_path: Path
+) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     df = df.copy()
     df["-log10p"] = -np.log10(df[p_col].clip(lower=1e-300))
@@ -18,7 +21,9 @@ def manhattan_plot(df: pd.DataFrame, chrom_col: str, pos_col: str, p_col: str, o
     fig, ax = plt.subplots(figsize=(10, 4))
     colors = ["#1f77b4", "#ff7f0e"]
     for chrom, group in df.groupby(chrom_col):
-        ax.scatter(group["ind"], group["-log10p"], s=6, color=colors[int(chrom) % 2], label=f"chr{chrom}")
+        ax.scatter(
+            group["ind"], group["-log10p"], s=6, color=colors[int(chrom) % 2], label=f"chr{chrom}"
+        )
     ax.axhline(-np.log10(5e-8), color="red", linestyle="--", linewidth=1)
     ax.set_xlabel("Genomic position")
     ax.set_ylabel("-log10 p-value")
@@ -46,7 +51,9 @@ def qq_plot(p_values: Sequence[float], out_path: Path) -> None:
     plt.close(fig)
 
 
-def volcano_plot(effect: Sequence[float], p_values: Sequence[float], gene_names: Sequence[str], out_path: Path) -> None:
+def volcano_plot(
+    effect: Sequence[float], p_values: Sequence[float], gene_names: Sequence[str], out_path: Path
+) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     effect = np.asarray(effect)
     logp = -np.log10(np.clip(p_values, 1e-300, 1.0))
@@ -63,7 +70,13 @@ def volcano_plot(effect: Sequence[float], p_values: Sequence[float], gene_names:
     plt.close(fig)
 
 
-def mr_forest_plot(beta: Sequence[float], se: Sequence[float], labels: Sequence[str], out_path: Path, overall: tuple[float, float] | None = None) -> None:
+def mr_forest_plot(
+    beta: Sequence[float],
+    se: Sequence[float],
+    labels: Sequence[str],
+    out_path: Path,
+    overall: tuple[float, float] | None = None,
+) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     beta = np.asarray(beta)
     se = np.asarray(se)
@@ -74,7 +87,9 @@ def mr_forest_plot(beta: Sequence[float], se: Sequence[float], labels: Sequence[
     ax.set_yticklabels(labels)
     ax.axvline(0, color="grey", linestyle="--")
     if overall is not None:
-        ax.errorbar(overall[0], len(beta) + 0.5, xerr=1.96 * overall[1], fmt="s", color="red", label="IVW")
+        ax.errorbar(
+            overall[0], len(beta) + 0.5, xerr=1.96 * overall[1], fmt="s", color="red", label="IVW"
+        )
         ax.set_ylim(-1, len(beta) + 1)
     ax.set_xlabel("Effect size")
     ax.set_title("MR Forest plot")
@@ -83,7 +98,9 @@ def mr_forest_plot(beta: Sequence[float], se: Sequence[float], labels: Sequence[
     plt.close(fig)
 
 
-def leave_one_out_plot(beta: Sequence[float], se: Sequence[float], labels: Sequence[str], out_path: Path) -> None:
+def leave_one_out_plot(
+    beta: Sequence[float], se: Sequence[float], labels: Sequence[str], out_path: Path
+) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     beta = np.asarray(beta)
     se = np.asarray(se)

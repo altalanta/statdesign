@@ -1,4 +1,5 @@
 """FastAPI application serving target database."""
+
 from __future__ import annotations
 
 import sqlite3
@@ -53,15 +54,20 @@ def target_detail(gene: str) -> List[Evidence]:
         ).fetchall()
     if not rows:
         raise HTTPException(status_code=404, detail="Gene not found")
-    return [Evidence(**{
-        "gene": row[0],
-        "disease": row[1],
-        "source": row[2],
-        "effect": row[3],
-        "p_value": row[4],
-        "qc_flag": row[5],
-        "details": row[6],
-    }) for row in rows]
+    return [
+        Evidence(
+            **{
+                "gene": row[0],
+                "disease": row[1],
+                "source": row[2],
+                "effect": row[3],
+                "p_value": row[4],
+                "qc_flag": row[5],
+                "details": row[6],
+            }
+        )
+        for row in rows
+    ]
 
 
 @app.get("/search", response_model=List[Evidence])
@@ -71,12 +77,17 @@ def search(disease: str = Query(...)) -> List[Evidence]:
             "SELECT gene, disease, source, effect, p_value, qc_flag, details FROM evidence WHERE disease LIKE ?",
             (f"%{disease}%",),
         ).fetchall()
-    return [Evidence(**{
-        "gene": row[0],
-        "disease": row[1],
-        "source": row[2],
-        "effect": row[3],
-        "p_value": row[4],
-        "qc_flag": row[5],
-        "details": row[6],
-    }) for row in rows]
+    return [
+        Evidence(
+            **{
+                "gene": row[0],
+                "disease": row[1],
+                "source": row[2],
+                "effect": row[3],
+                "p_value": row[4],
+                "qc_flag": row[5],
+                "details": row[6],
+            }
+        )
+        for row in rows
+    ]

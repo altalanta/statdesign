@@ -1,4 +1,5 @@
 """Harmonize exposure and outcome summary statistics for MR."""
+
 from __future__ import annotations
 
 from typing import Tuple
@@ -6,7 +7,9 @@ from typing import Tuple
 import pandas as pd
 
 
-def harmonize_sumstats(exposure: pd.DataFrame, outcome: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def harmonize_sumstats(
+    exposure: pd.DataFrame, outcome: pd.DataFrame
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Align alleles between exposure and outcome datasets."""
 
     outcome = outcome.copy()
@@ -23,10 +26,15 @@ def harmonize_sumstats(exposure: pd.DataFrame, outcome: pd.DataFrame) -> Tuple[p
         frozenset({"C", "G"}),
     }
 
-    if {"effect_allele", "other_allele"}.issubset(exposure.columns) and {"effect_allele", "other_allele"}.issubset(outcome.columns):
+    if {"effect_allele", "other_allele"}.issubset(exposure.columns) and {
+        "effect_allele",
+        "other_allele",
+    }.issubset(outcome.columns):
         aligned_beta = []
         aligned_se = []
-        for _, exp_row, out_row in zip(range(len(exposure)), exposure.itertuples(), outcome.itertuples()):
+        for _, exp_row, out_row in zip(
+            range(len(exposure)), exposure.itertuples(), outcome.itertuples()
+        ):
             exp_effect = getattr(exp_row, "effect_allele", None)
             out_effect = getattr(out_row, "effect_allele", None)
             if exp_effect == out_effect:

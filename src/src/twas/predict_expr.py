@@ -1,4 +1,5 @@
 """Predict genetically regulated expression (GReX)."""
+
 from __future__ import annotations
 
 import argparse
@@ -23,7 +24,9 @@ def run(config_path: Path) -> pd.DataFrame:
     )
     eqtl = pd.read_csv(Path(paths["eqtl_weights"]))
 
-    snp_to_idx = {row.snp_id: idx for idx, row in cohort.snp_info.reset_index().itertuples(index=False)}
+    snp_to_idx = {
+        row.snp_id: idx for idx, row in cohort.snp_info.reset_index().itertuples(index=False)
+    }
 
     genes = sorted(eqtl["gene"].unique())
     expr = np.zeros((cohort.genotypes.shape[0], len(genes)), dtype=float)

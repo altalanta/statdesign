@@ -1,4 +1,5 @@
 """SQLite database builder for targetdb-mini."""
+
 from __future__ import annotations
 
 import argparse
@@ -41,10 +42,22 @@ def build(database_path: Path) -> None:
     database_path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(database_path) as conn:
         conn.executescript(SCHEMA)
-        conn.execute("INSERT OR IGNORE INTO sources (name, description) VALUES (?, ?)", ("GWAS", "Genome-wide association"))
-        conn.execute("INSERT OR IGNORE INTO sources (name, description) VALUES (?, ?)", ("TWAS", "Transcriptome-wide association"))
-        conn.execute("INSERT OR IGNORE INTO sources (name, description) VALUES (?, ?)", ("MR", "Mendelian randomization"))
-        conn.execute("INSERT OR IGNORE INTO sources (name, description) VALUES (?, ?)", ("SV", "Structural variation"))
+        conn.execute(
+            "INSERT OR IGNORE INTO sources (name, description) VALUES (?, ?)",
+            ("GWAS", "Genome-wide association"),
+        )
+        conn.execute(
+            "INSERT OR IGNORE INTO sources (name, description) VALUES (?, ?)",
+            ("TWAS", "Transcriptome-wide association"),
+        )
+        conn.execute(
+            "INSERT OR IGNORE INTO sources (name, description) VALUES (?, ?)",
+            ("MR", "Mendelian randomization"),
+        )
+        conn.execute(
+            "INSERT OR IGNORE INTO sources (name, description) VALUES (?, ?)",
+            ("SV", "Structural variation"),
+        )
 
 
 def main() -> None:

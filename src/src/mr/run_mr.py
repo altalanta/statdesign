@@ -1,4 +1,5 @@
 """Mendelian randomization analyses."""
+
 from __future__ import annotations
 
 import argparse
@@ -11,7 +12,7 @@ import yaml
 
 from src.mr.harmonize import harmonize_sumstats
 from src.utils import io
-from src.utils.stats import MRResult, cochran_q, inverse_variance_weighted, mr_egger
+from src.utils.stats import cochran_q, inverse_variance_weighted, mr_egger
 from src.utils.viz import leave_one_out_plot, mr_forest_plot
 
 
@@ -19,7 +20,9 @@ def run(config_path: Path) -> pd.DataFrame:
     config = yaml.safe_load(config_path.read_text())
     paths: Dict[str, str] = config["paths"]
 
-    exposure, outcome = io.load_sumstats(Path(paths["sumstats_exposure"]), Path(paths["sumstats_outcome"]))
+    exposure, outcome = io.load_sumstats(
+        Path(paths["sumstats_exposure"]), Path(paths["sumstats_outcome"])
+    )
 
     exposure_aligned, outcome_aligned = harmonize_sumstats(exposure, outcome)
 
@@ -36,8 +39,18 @@ def run(config_path: Path) -> pd.DataFrame:
     results = pd.DataFrame(
         [
             {"method": "IVW", "beta": ivw.beta, "se": ivw.se, "p_value": ivw.p_value},
-            {"method": "MR-Egger slope", "beta": slope.beta, "se": slope.se, "p_value": slope.p_value},
-            {"method": "MR-Egger intercept", "beta": intercept.beta, "se": intercept.se, "p_value": intercept.p_value},
+            {
+                "method": "MR-Egger slope",
+                "beta": slope.beta,
+                "se": slope.se,
+                "p_value": slope.p_value,
+            },
+            {
+                "method": "MR-Egger intercept",
+                "beta": intercept.beta,
+                "se": intercept.se,
+                "p_value": intercept.p_value,
+            },
             {"method": "Cochran_Q", "beta": q_stat, "se": np.nan, "p_value": np.nan},
         ]
     )
@@ -45,8 +58,16 @@ def run(config_path: Path) -> pd.DataFrame:
     out_dir = Path(paths["mr"]["plots_dir"])
     out_dir.mkdir(parents=True, exist_ok=True)
     forest_path = out_dir / "forest.png"
-    mr_forest_plot(by / bx, sy / bx, labels=exposure_aligned["snp"], out_path=forest_path, overall=(ivw.beta, ivw.se))
-    leave_one_out_plot(loo_estimates, loo_se, exposure_aligned["snp"], out_dir / "leave_one_out.png")
+    mr_forest_plot(
+        by / bx,
+        sy / bx,
+        labels=exposure_aligned["snp"],
+        out_path=forest_path,
+        overall=(ivw.beta, ivw.se),
+    )
+    leave_one_out_plot(
+        loo_estimates, loo_se, exposure_aligned["snp"], out_dir / "leave_one_out.png"
+    )
 
     results_path = Path(paths["mr"]["results"])
     results_path.parent.mkdir(parents=True, exist_ok=True)
@@ -54,7 +75,9 @@ def run(config_path: Path) -> pd.DataFrame:
     return results
 
 
-def _leave_one_out(beta_exposure: np.ndarray, beta_outcome: np.ndarray, se_outcome: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def _leave_one_out(
+    beta_exposure: np.ndarray, beta_outcome: np.ndarray, se_outcome: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
     estimates = []
     ses = []
     for i in range(len(beta_exposure)):

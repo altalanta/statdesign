@@ -59,9 +59,7 @@ def _tost_bounds(
     return lower, upper
 
 
-def _power_location(
-    effect: float, alpha: float, tail: Tail, test: ZorT, df: float | None
-) -> float:
+def _power_location(effect: float, alpha: float, tail: Tail, test: ZorT, df: float | None) -> float:
     if test == "t":
         if df is None:
             raise ValueError("df required for t distribution")

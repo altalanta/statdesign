@@ -1,12 +1,13 @@
 """Repeat expansion association testing."""
+
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 from typing import Dict
 
-import statsmodels.api as sm
 import pandas as pd
+import statsmodels.api as sm
 import yaml
 
 from src.utils import io

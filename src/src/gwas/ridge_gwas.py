@@ -1,4 +1,5 @@
 """Two-step ridge GWAS workflow."""
+
 from __future__ import annotations
 
 import argparse
@@ -95,12 +96,14 @@ def _linear_scan(geno: np.ndarray, trait: np.ndarray, cov: np.ndarray) -> pd.Dat
         se = np.sqrt(sigma2 / denom)
         z = beta / se
         p_val = 2 * (1 - stats.norm.cdf(abs(z)))
-        rows.append({
-            "snp_index": idx,
-            "beta": beta,
-            "se": se,
-            "p_value": p_val,
-        })
+        rows.append(
+            {
+                "snp_index": idx,
+                "beta": beta,
+                "se": se,
+                "p_value": p_val,
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -120,12 +123,14 @@ def _logistic_scan(geno: np.ndarray, trait: np.ndarray, cov: np.ndarray) -> pd.D
             beta = np.nan
             se = np.nan
             p_val = 1.0
-        rows.append({
-            "snp_index": idx,
-            "beta": beta,
-            "se": se,
-            "p_value": p_val,
-        })
+        rows.append(
+            {
+                "snp_index": idx,
+                "beta": beta,
+                "se": se,
+                "p_value": p_val,
+            }
+        )
     return pd.DataFrame(rows)
 
 

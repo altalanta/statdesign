@@ -1,8 +1,10 @@
 """Statistical helpers for targetdb-mini."""
+
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable, List, Tuple
+from typing import List, Tuple
 
 import numpy as np
 
@@ -43,7 +45,9 @@ def genomic_inflation_lambda(chi2: Iterable[float]) -> float:
     return median_chi2 / 0.456
 
 
-def inverse_variance_weighted(beta_exposure: np.ndarray, beta_outcome: np.ndarray, se_outcome: np.ndarray) -> MRResult:
+def inverse_variance_weighted(
+    beta_exposure: np.ndarray, beta_outcome: np.ndarray, se_outcome: np.ndarray
+) -> MRResult:
     """Perform inverse variance weighted Mendelian randomization."""
 
     w = 1.0 / (se_outcome**2)
@@ -54,7 +58,9 @@ def inverse_variance_weighted(beta_exposure: np.ndarray, beta_outcome: np.ndarra
     return MRResult(beta=beta, se=se, p_value=p)
 
 
-def mr_egger(beta_exposure: np.ndarray, beta_outcome: np.ndarray, se_outcome: np.ndarray) -> Tuple[MRResult, MRResult]:
+def mr_egger(
+    beta_exposure: np.ndarray, beta_outcome: np.ndarray, se_outcome: np.ndarray
+) -> Tuple[MRResult, MRResult]:
     """Run MR-Egger regression returning slope and intercept results."""
 
     x = beta_exposure

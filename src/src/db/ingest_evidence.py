@@ -1,4 +1,5 @@
 """Ingest evidence into SQLite database."""
+
 from __future__ import annotations
 
 import argparse
@@ -32,7 +33,9 @@ def _insert_target(conn: sqlite3.Connection, gene: str) -> None:
 
 
 def _insert_disease(conn: sqlite3.Connection, disease: str) -> None:
-    conn.execute("INSERT OR IGNORE INTO diseases (disease, category) VALUES (?, ?)", (disease, "synthetic"))
+    conn.execute(
+        "INSERT OR IGNORE INTO diseases (disease, category) VALUES (?, ?)", (disease, "synthetic")
+    )
 
 
 def _load_gwas(conn: sqlite3.Connection, path: Path) -> None:
@@ -52,7 +55,7 @@ def _load_gwas(conn: sqlite3.Connection, path: Path) -> None:
             gene = str(getattr(row, "snp_index", "NA"))
         conn.execute(
             "INSERT INTO evidence (gene, disease, source, effect, p_value, qc_flag, details) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (gene, row.disease, row.source, row.beta, row.p_value, row.qc_flag, "")
+            (gene, row.disease, row.source, row.beta, row.p_value, row.qc_flag, ""),
         )
         _insert_target(conn, gene)
         _insert_disease(conn, row.disease)
@@ -65,7 +68,7 @@ def _load_twas(conn: sqlite3.Connection, path: Path) -> None:
     for row in df[df["p_value"] < 1e-3].itertuples(index=False):
         conn.execute(
             "INSERT INTO evidence (gene, disease, source, effect, p_value, qc_flag, details) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (row.gene, row.trait, "TWAS", row.beta, row.p_value, "OK", "")
+            (row.gene, row.trait, "TWAS", row.beta, row.p_value, "OK", ""),
         )
         _insert_target(conn, row.gene)
         _insert_disease(conn, row.trait)
@@ -78,7 +81,7 @@ def _load_mr(conn: sqlite3.Connection, path: Path) -> None:
     for row in df[df["method"] == "IVW"].itertuples(index=False):
         conn.execute(
             "INSERT INTO evidence (gene, disease, source, effect, p_value, qc_flag, details) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            ("GENE0001", "Disease", "MR", row.beta, row.p_value, "OK", "IVW estimate")
+            ("GENE0001", "Disease", "MR", row.beta, row.p_value, "OK", "IVW estimate"),
         )
         _insert_target(conn, "GENE0001")
         _insert_disease(conn, "Disease")
@@ -95,7 +98,7 @@ def _load_sv(conn: sqlite3.Connection, path: Path) -> None:
         for row in df.itertuples(index=False):
             conn.execute(
                 "INSERT INTO evidence (gene, disease, source, effect, p_value, qc_flag, details) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                ("GENE0001", row.trait, "SV", row.beta, row.p_value, "QC", file)
+                ("GENE0001", row.trait, "SV", row.beta, row.p_value, "QC", file),
             )
             _insert_target(conn, "GENE0001")
             _insert_disease(conn, row.trait)

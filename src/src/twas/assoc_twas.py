@@ -1,11 +1,11 @@
 """TWAS association tests between predicted expression and traits."""
+
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 from typing import Dict
 
-import numpy as np
 import pandas as pd
 import yaml
 from scipy import stats
@@ -43,13 +43,15 @@ def run(config_path: Path) -> pd.DataFrame:
                 slope, intercept, r, p, _ = stats.linregress(expr, y)
             else:
                 slope, intercept, r, p, _ = stats.linregress(expr, y)
-            results.append({
-                "gene": gene,
-                "trait": trait,
-                "beta": slope,
-                "p_value": p,
-                "r": r,
-            })
+            results.append(
+                {
+                    "gene": gene,
+                    "trait": trait,
+                    "beta": slope,
+                    "p_value": p,
+                    "r": r,
+                }
+            )
 
     df = pd.DataFrame(results)
     out_path = Path(paths["twas"]["results"])

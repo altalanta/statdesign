@@ -1,4 +1,5 @@
 """Quality control utilities for GWAS analyses."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -39,11 +40,13 @@ def hardy_weinberg_p(genotypes: np.ndarray) -> np.ndarray:
             counts.append(1.0)
             continue
         p = (2 * obs_hom_alt + obs_het) / (2 * n)
-        expected = np.array([
-            (1 - p) ** 2 * n,
-            2 * p * (1 - p) * n,
-            p**2 * n,
-        ])
+        expected = np.array(
+            [
+                (1 - p) ** 2 * n,
+                2 * p * (1 - p) * n,
+                p**2 * n,
+            ]
+        )
         observed = np.array([obs_hom_ref, obs_het, obs_hom_alt])
         chi2 = np.sum((observed - expected) ** 2 / (expected + 1e-8))
         p_val = 1 - _chi2_cdf(chi2, 1)
@@ -51,7 +54,12 @@ def hardy_weinberg_p(genotypes: np.ndarray) -> np.ndarray:
     return np.asarray(counts)
 
 
-def qc_filter(genotypes: np.ndarray, call_rate_threshold: float = 0.95, maf_threshold: float = 0.01, hwe_threshold: float = 1e-6) -> np.ndarray:
+def qc_filter(
+    genotypes: np.ndarray,
+    call_rate_threshold: float = 0.95,
+    maf_threshold: float = 0.01,
+    hwe_threshold: float = 1e-6,
+) -> np.ndarray:
     """Return boolean mask of SNPs passing QC."""
 
     cr = call_rate(genotypes)
@@ -72,7 +80,7 @@ def _chi2_from_p(p_values: np.ndarray) -> np.ndarray:
 
 
 def _chi2_cdf(x: float, df: int) -> float:
-    from math import erf, sqrt
+    from math import erf
 
     if df != 1:
         raise NotImplementedError("Only df=1 implemented")

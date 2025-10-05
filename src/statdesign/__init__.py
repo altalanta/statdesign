@@ -2,12 +2,7 @@
 
 from __future__ import annotations
 
-from importlib import metadata as _metadata
-
-try:
-    __version__ = _metadata.version("statdesign")
-except _metadata.PackageNotFoundError:  # pragma: no cover - during local dev
-    __version__ = "0.0.0"
+__version__ = "0.1.0"
 
 from .api import (  # noqa: E402 - re-export public API
     EntryDistribution,
@@ -55,4 +50,3 @@ __all__ = [
     "alpha_adjust",
     "bh_thresholds",
 ]
-

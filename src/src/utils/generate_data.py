@@ -1,4 +1,5 @@
 """Utilities to generate deterministic synthetic datasets for targetdb-mini."""
+
 from __future__ import annotations
 
 import argparse
@@ -40,21 +41,25 @@ def generate_all(seed: int = 42) -> None:
     genotypes = rng.binomial(2, maf, size=(n_samples, n_snps)).astype(np.int8)
     np.save(base_paths["genotype"], genotypes)
 
-    snp_ids = pd.DataFrame({
-        "snp_id": [f"rs{i:06d}" for i in range(1, n_snps + 1)],
-        "maf": maf,
-        "chrom": rng.integers(1, 23, size=n_snps),
-        "position": rng.integers(1, 5_000_000, size=n_snps),
-    })
+    snp_ids = pd.DataFrame(
+        {
+            "snp_id": [f"rs{i:06d}" for i in range(1, n_snps + 1)],
+            "maf": maf,
+            "chrom": rng.integers(1, 23, size=n_snps),
+            "position": rng.integers(1, 5_000_000, size=n_snps),
+        }
+    )
     snp_ids.to_csv(base_paths["snp_ids"], index=False)
 
-    covariates = pd.DataFrame({
-        "sample_id": [f"IID{i:04d}" for i in range(n_samples)],
-        "sex": rng.integers(0, 2, size=n_samples),
-        "PC1": rng.normal(0, 1, n_samples),
-        "PC2": rng.normal(0, 1, n_samples),
-        "PC3": rng.normal(0, 1, n_samples),
-    })
+    covariates = pd.DataFrame(
+        {
+            "sample_id": [f"IID{i:04d}" for i in range(n_samples)],
+            "sex": rng.integers(0, 2, size=n_samples),
+            "PC1": rng.normal(0, 1, n_samples),
+            "PC2": rng.normal(0, 1, n_samples),
+            "PC3": rng.normal(0, 1, n_samples),
+        }
+    )
     covariates.to_csv(base_paths["covariates"], index=False)
 
     causal_snps = np.array([10, 25, 40])  # zero-based indices
@@ -65,12 +70,7 @@ def generate_all(seed: int = 42) -> None:
     cov_matrix = covariates[["sex", "PC1", "PC2", "PC3"]].to_numpy()
 
     noise_q = rng.normal(0, 1.0, size=n_samples)
-    quant_trait = (
-        g_causal @ beta_quant
-        + 0.3 * cov_matrix[:, 1]
-        - 0.2 * cov_matrix[:, 2]
-        + noise_q
-    )
+    quant_trait = g_causal @ beta_quant + 0.3 * cov_matrix[:, 1] - 0.2 * cov_matrix[:, 2] + noise_q
 
     logits = (
         g_causal @ beta_logit
@@ -93,16 +93,20 @@ def generate_all(seed: int = 42) -> None:
         snp_indices = rng.choice(n_snps, size=3, replace=False)
         weights = rng.normal(0, 0.2, size=3)
         for idx, w in zip(snp_indices, weights):
-            eqtl_rows.append({
-                "gene": gene,
-                "snp_id": snp_ids.loc[idx, "snp_id"],
-                "weight": w,
-            })
-            pqtl_rows.append({
-                "protein": gene.replace("GENE", "PROT"),
-                "snp_id": snp_ids.loc[idx, "snp_id"],
-                "weight": w + rng.normal(0, 0.05),
-            })
+            eqtl_rows.append(
+                {
+                    "gene": gene,
+                    "snp_id": snp_ids.loc[idx, "snp_id"],
+                    "weight": w,
+                }
+            )
+            pqtl_rows.append(
+                {
+                    "protein": gene.replace("GENE", "PROT"),
+                    "snp_id": snp_ids.loc[idx, "snp_id"],
+                    "weight": w + rng.normal(0, 0.05),
+                }
+            )
     pd.DataFrame(eqtl_rows).to_csv(base_paths["eqtl"], index=False)
     pd.DataFrame(pqtl_rows).to_csv(base_paths["pqtl"], index=False)
 
@@ -114,9 +118,8 @@ def generate_all(seed: int = 42) -> None:
     instruments.rename(columns={"snp_id": "snp"}).to_csv(base_paths["sumstats_exp"], index=False)
 
     outcome = instruments.copy()
-    outcome["beta_outcome"] = (
-        outcome["beta_exposure"] * 0.6
-        + rng.normal(0, 0.02, size=len(outcome))
+    outcome["beta_outcome"] = outcome["beta_exposure"] * 0.6 + rng.normal(
+        0, 0.02, size=len(outcome)
     )
     outcome["se_outcome"] = rng.uniform(0.015, 0.06, size=len(outcome))
     outcome.rename(columns={"snp_id": "snp"}).to_csv(base_paths["sumstats_out"], index=False)
@@ -124,28 +127,34 @@ def generate_all(seed: int = 42) -> None:
     cnv_sample = rng.choice(covariates["sample_id"], size=80, replace=False)
     cnv_start = rng.integers(1, 5_000_000, size=80)
     cnv_length = rng.integers(10_000, 200_000, size=80)
-    cnv_df = pd.DataFrame({
-        "sample_id": cnv_sample,
-        "start": cnv_start,
-        "end": cnv_start + cnv_length,
-    })
+    cnv_df = pd.DataFrame(
+        {
+            "sample_id": cnv_sample,
+            "start": cnv_start,
+            "end": cnv_start + cnv_length,
+        }
+    )
     cnv_df["type"] = rng.choice(["DEL", "DUP"], size=80)
     cnv_df["length"] = cnv_length
     cnv_df.to_csv(base_paths["cnv"], index=False)
 
-    repeats = pd.DataFrame({
-        "sample_id": rng.choice(covariates["sample_id"], size=120, replace=True),
-        "locus": rng.choice(["STR1", "STR2", "STR3"], size=120),
-        "repeat_count": rng.integers(10, 80, size=120),
-    })
+    repeats = pd.DataFrame(
+        {
+            "sample_id": rng.choice(covariates["sample_id"], size=120, replace=True),
+            "locus": rng.choice(["STR1", "STR2", "STR3"], size=120),
+            "repeat_count": rng.integers(10, 80, size=120),
+        }
+    )
     repeats.to_csv(base_paths["repeats"], index=False)
 
-    gnomad = pd.DataFrame({
-        "gene": genes,
-        "is_pLoF": rng.binomial(1, 0.1, size=len(genes)),
-        "is_pGoF": rng.binomial(1, 0.05, size=len(genes)),
-        "constraint_z": rng.normal(0, 1.5, size=len(genes)),
-    })
+    gnomad = pd.DataFrame(
+        {
+            "gene": genes,
+            "is_pLoF": rng.binomial(1, 0.1, size=len(genes)),
+            "is_pGoF": rng.binomial(1, 0.05, size=len(genes)),
+            "constraint_z": rng.normal(0, 1.5, size=len(genes)),
+        }
+    )
     gnomad.to_csv(base_paths["gnomad"], index=False)
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import warnings
 from typing import Literal
 
 from ..core import alloc, ncf, normal, solve
@@ -16,7 +17,7 @@ _MAX_EXACT = 200
 
 def _validate_probability(value: float, name: str) -> None:
     if not 0 < value < 1:
-        raise ValueError(f"{name} must be between 0 and 1")
+        raise ValueError(f"{name} must be in (0, 1)")
 
 
 def _validate_common(alpha: float, power: float, tail: Tail) -> None:
@@ -107,7 +108,16 @@ def _critical_region_two_sided(n: int, p_null: float, alpha: float) -> tuple[int
 
 def _power_one_prop_exact(p: float, p_null: float, n: int, alpha: float, tail: Tail) -> float:
     if n > _MAX_EXACT:
-        raise NotImplementedError("exact=True not supported for n > 200; try normal approximation")
+        warnings.warn(
+            "exact=True not feasible for n>200; falling back to normal approximation", 
+            RuntimeWarning
+        )
+        # Fall back to normal approximation
+        se = math.sqrt(p_null * (1.0 - p_null) / n)
+        delta = p - p_null
+        effect = delta / se
+        return ncf.power_normal(effect, alpha, tail)
+    
     pmf = _binom_pmf_array(n, p)
     if tail == "two-sided":
         low, high = _critical_region_two_sided(n, p_null, alpha)
@@ -128,7 +138,15 @@ def _power_one_prop_equivalence_exact(
     alpha: float,
 ) -> float:
     if n > _MAX_EXACT:
-        raise NotImplementedError("exact=True not supported for n > 200; try normal approximation")
+        warnings.warn(
+            "exact=True not feasible for n>200; falling back to normal approximation", 
+            RuntimeWarning
+        )
+        # Fall back to normal approximation for equivalence
+        se = math.sqrt(p0 * (1.0 - p0) / n)
+        delta = p - p0
+        return _equivalence_power(delta, se, alpha, margin)
+    
     low_bound, _ = _critical_region_one_sided(n, p0 - margin, alpha, "greater")
     _, high_bound = _critical_region_one_sided(n, p0 + margin, alpha, "less")
     if low_bound > high_bound:
@@ -152,10 +170,7 @@ def _fisher_p_value(x1: int, n1: int, x2: int, n2: int, alternative: str) -> flo
     successes = x1 + x2
     x_min = max(0, successes - n2)
     x_max = min(n1, successes)
-    probs = [
-        _hypergeom_prob(n1, n2, successes, x)
-        for x in range(x_min, x_max + 1)
-    ]
+    probs = [_hypergeom_prob(n1, n2, successes, x) for x in range(x_min, x_max + 1)]
     observed = probs[x1 - x_min]
     if alternative == "two-sided":
         threshold = observed + 1e-12
@@ -176,7 +191,12 @@ def _power_two_prop_exact(
     tail: Tail,
 ) -> float:
     if n1 > _MAX_EXACT or n2 > _MAX_EXACT:
-        raise NotImplementedError("exact=True not supported for n > 200; try normal approximation")
+        warnings.warn(
+            "exact=True not feasible for n>200; falling back to normal approximation", 
+            RuntimeWarning
+        )
+        # Fall back to corrected normal approximation
+        return _power_two_prop_corrected(p1, p2, n1, n2, alpha, tail)
     pmf1 = _binom_pmf_array(n1, p1)
     pmf2 = _binom_pmf_array(n2, p2)
     alternative = {"two-sided": "two-sided", "greater": "greater", "less": "less"}[tail]
@@ -206,6 +226,72 @@ def _equivalence_power(delta: float, se: float, alpha: float, margin: float) -> 
     if lower >= upper:
         return 0.0
     return normal.cdf(upper - effect) - normal.cdf(lower - effect)
+
+
+def _z_alpha(alpha: float, two_sided: bool) -> float:
+    """Get critical z-value for alpha level."""
+    a = alpha / 2.0 if two_sided else alpha
+    return normal.ppf(1.0 - a)
+
+
+def _z_beta(power: float) -> float:
+    """Get z-value for power (1-beta)."""
+    beta = 1.0 - power
+    return normal.ppf(1.0 - beta)
+
+
+def _round_up_even(x: float) -> int:
+    """Round up to nearest integer, preserving library's rounding policy."""
+    return int(math.ceil(x))
+
+
+def _power_two_prop_corrected(
+    p1: float, p2: float, n1: int, n2: int, alpha: float, tail: Tail
+) -> float:
+    """Two-proportion power using Fleiss method (matches G*Power/pwr)."""
+    # Fleiss method used by G*Power and R's pwr package
+    # Equal n assumed for this path; unequal handled elsewhere
+    
+    if n1 != n2:
+        # Fall back to original method for unequal allocation
+        total = n1 + n2
+        pooled = (p1 * n1 + p2 * n2) / total
+        se = math.sqrt(pooled * (1.0 - pooled) * (1.0 / n1 + 1.0 / n2))
+        delta = p1 - p2
+        effect = delta / se
+        return ncf.power_normal(effect, alpha, tail)
+    
+    # Equal allocation: Fleiss method
+    n = n1
+    
+    # Pooled proportion under H0: p1 = p2
+    p_pooled = (p1 + p2) / 2.0
+    
+    # Standard errors
+    se_null = math.sqrt(2.0 * p_pooled * (1.0 - p_pooled) / n)  # Under H0
+    se_alt = math.sqrt((p1 * (1.0 - p1) + p2 * (1.0 - p2)) / n)  # Under H1
+    
+    delta = p1 - p2
+    
+    if tail == "two-sided":
+        z_alpha = normal.ppf(1.0 - alpha / 2.0)
+        # Critical region boundary
+        crit = z_alpha * se_null
+        # Power under H1
+        z_effect = abs(delta) / se_alt
+        power = normal.sf((crit - abs(delta)) / se_alt) + normal.cdf((-crit - abs(delta)) / se_alt)
+    elif tail == "greater":
+        z_alpha = normal.ppf(1.0 - alpha)
+        crit = z_alpha * se_null
+        z_effect = delta / se_alt
+        power = normal.sf((crit - delta) / se_alt)
+    else:  # "less"
+        z_alpha = normal.ppf(alpha)
+        crit = z_alpha * se_null
+        z_effect = delta / se_alt
+        power = normal.cdf((crit - delta) / se_alt)
+    
+    return float(power)
 
 
 def n_one_sample_prop(
@@ -289,12 +375,16 @@ def n_two_prop(
         n1i, n2i = alloc.groups_from_n1(n1i, ratio)
         if exact:
             return _power_two_prop_exact(p1, p2, n1i, n2i, alpha, tail)
+        
+        if ni_type is None:
+            # Use corrected H0/H1 variance calculation
+            return _power_two_prop_corrected(p1, p2, n1i, n2i, alpha, tail)
+        
+        # For NI/equivalence, use original pooled calculation for compatibility
         total = n1i + n2i
         pooled = (p1 * n1i + p2 * n2i) / total
         se = math.sqrt(pooled * (1.0 - pooled) * (1.0 / n1i + 1.0 / n2i))
         delta = p1 - p2
-        if ni_type is None:
-            return _power_score(delta, se, alpha, tail)
         assert ni_margin is not None
         if ni_type == "noninferiority":
             shift = ni_margin if tail == "greater" else -ni_margin
