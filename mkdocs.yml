@@ -24,6 +24,7 @@ nav:
   - Quickstart: quickstart.md
   - CLI Usage: cli.md
   - API Reference: api.md
+  - Interactive Calculators: calculators.md
   - Math Notes: math.md
   - Contributing: contributing.md
   - Changelog: changelog.md

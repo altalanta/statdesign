@@ -2,54 +2,78 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://altalanta.github.io/statdesign/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/api/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://altalanta.github.io/statdesign/calculators/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://altalanta.github.io/statdesign/changelog/</loc>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/cli/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://altalanta.github.io/statdesign/contributing/</loc>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/install/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://altalanta.github.io/statdesign/math/</loc>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/quickstart/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/usage/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://altalanta.github.io/statdesign/docs/IMPLEMENTATION_SUMMARY/</loc>
+         <lastmod>2025-10-05</lastmod>
+    </url>
+    <url>
+         <loc>https://altalanta.github.io/statdesign/docs/README_graph_features/</loc>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/parity/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/parity/anova/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/parity/means/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/parity/one_sample_means/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/parity/paired_means/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/parity/survival/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
     </url>
     <url>
          <loc>https://altalanta.github.io/statdesign/parity/two_proportions/</loc>
-         <lastmod>2025-09-26</lastmod>
+         <lastmod>2025-10-05</lastmod>
     </url>
 </urlset>

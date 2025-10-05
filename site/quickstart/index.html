@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://altalanta.github.io/statdesign/quickstart/">
       
       
-        <link rel="prev" href="../install/">
+        <link rel="prev" href="..">
       
       
         <link rel="next" href="../cli/">
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#quickstart-python-api" class="md-skip">
+        <a href="#quickstart-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -228,25 +228,6 @@
   
   
   
-  
-    <li class="md-tabs__item">
-      <a href="../install/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Installation
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
     
   
   
@@ -276,7 +257,7 @@
   
     
   
-  CLI
+  CLI Usage
 
       </a>
     </li>
@@ -308,13 +289,13 @@
   
   
     <li class="md-tabs__item">
-      <a href="../usage/" class="md-tabs__link">
+      <a href="../calculators/" class="md-tabs__link">
         
   
   
     
   
-  Usage
+  Interactive Calculators
 
       </a>
     </li>
@@ -326,18 +307,55 @@
   
   
   
-    
-    
-      <li class="md-tabs__item">
-        <a href="../parity/" class="md-tabs__link">
-          
+    <li class="md-tabs__item">
+      <a href="../math/" class="md-tabs__link">
+        
   
   
-  Parity Tables
+    
+  
+  Math Notes
 
-        </a>
-      </li>
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../contributing/" class="md-tabs__link">
+        
+  
+  
     
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
   
 
       
@@ -412,28 +430,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../install/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Installation
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -487,9 +483,219 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scipy-backed-distributions" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      SciPy-backed distributions
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Installation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#with-enhanced-statistical-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      With Enhanced Statistical Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-api-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python API Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Python API Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-sample-proportions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Two-Sample Proportions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#two-sample-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      Two-Sample Means
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anova-sample-sizes" class="md-nav__link">
+    <span class="md-ellipsis">
+      ANOVA Sample Sizes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-testing-corrections" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiple Testing Corrections
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command-Line Interface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command-Line Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scipy-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      SciPy Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SciPy Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manual-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment Variable
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#power-vs-sample-size-trade-offs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Power vs Sample Size Trade-offs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Pitfalls
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Pitfalls">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-very-small-effect-sizes" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Very Small Effect Sizes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-identical-groups-no-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Identical Groups (No Effect)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-extreme-power-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Extreme Power Requirements
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
     </span>
   </a>
   
@@ -515,7 +721,7 @@
   
   
   <span class="md-ellipsis">
-    CLI
+    CLI Usage
     
   </span>
   
@@ -554,12 +760,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/" class="md-nav__link">
+      <a href="../calculators/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Usage
+    Interactive Calculators
     
   </span>
   
@@ -571,62 +777,17 @@
     
       
       
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    Parity Tables
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
-            <span class="md-nav__icon md-icon"></span>
-            Parity Tables
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
   
   
   
   
     <li class="md-nav__item">
-      <a href="../parity/" class="md-nav__link">
+      <a href="../math/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Parity checks
+    Math Notes
     
   </span>
   
@@ -635,11 +796,47 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
+    
       
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -671,9 +868,219 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scipy-backed-distributions" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
-      SciPy-backed distributions
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Installation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#with-enhanced-statistical-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      With Enhanced Statistical Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-api-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python API Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Python API Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-sample-proportions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Two-Sample Proportions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#two-sample-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      Two-Sample Means
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anova-sample-sizes" class="md-nav__link">
+    <span class="md-ellipsis">
+      ANOVA Sample Sizes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-testing-corrections" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiple Testing Corrections
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command-Line Interface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Command-Line Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scipy-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      SciPy Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SciPy Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manual-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment Variable
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#power-vs-sample-size-trade-offs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Power vs Sample Size Trade-offs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Pitfalls
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Pitfalls">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-very-small-effect-sizes" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Very Small Effect Sizes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-identical-groups-no-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Identical Groups (No Effect)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-extreme-power-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Extreme Power Requirements
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
     </span>
   </a>
   
@@ -698,28 +1105,153 @@
   
 
 
-<h1 id="quickstart-python-api">Quickstart (Python API)<a class="headerlink" href="#quickstart-python-api" title="Permanent link">&para;</a></h1>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">statdesign</span><span class="w"> </span><span class="kn">import</span> <span class="n">n_two_prop</span><span class="p">,</span> <span class="n">n_mean</span><span class="p">,</span> <span class="n">alpha_adjust</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Two-sample proportions (normal approximation).</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.60</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="mf">0.50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span>  <span class="c1"># 389 389</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Two-sample means with a conservative t-approximation fallback.</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_mean</span><span class="p">(</span><span class="n">mu1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">mu2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span>  <span class="c1"># 64 64 when SciPy is available or via the fallback cushion</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Family-wise error control for multiple hypotheses.</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">per_test_alpha</span> <span class="o">=</span> <span class="n">alpha_adjust</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bonferroni&quot;</span><span class="p">)</span>
+<h1 id="quickstart-guide">Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Permanent link">&para;</a></h1>
+<p>This guide demonstrates common use cases for statdesign's Python API and command-line interface.</p>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<h3 id="basic-installation">Basic Installation<a class="headerlink" href="#basic-installation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>statdesign
 </code></pre></div>
-<h3 id="scipy-backed-distributions">SciPy-backed distributions<a class="headerlink" href="#scipy-backed-distributions" title="Permanent link">&para;</a></h3>
-<p>Activate SciPy support when you need exact noncentral <span class="arithmatex">\(t\)</span> or <span class="arithmatex">\(F\)</span> behaviour:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">STATDESIGN_AUTO_SCIPY</span><span class="o">=</span><span class="m">1</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;statdesign[full]&quot;</span><span class="w">  </span><span class="c1"># ensures SciPy is available</span>
+<h3 id="with-enhanced-statistical-functions">With Enhanced Statistical Functions<a class="headerlink" href="#with-enhanced-statistical-functions" title="Permanent link">&para;</a></h3>
+<p>For improved accuracy with exact noncentral distributions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>statdesign<span class="o">[</span>scipy<span class="o">]</span>
 </code></pre></div>
-<p>When SciPy is unavailable the package uses normal approximations and inflates
-sample sizes slightly to remain conservative. The documentation details when
-approximations are adequate and when you should enable SciPy.</p>
+<h2 id="python-api-examples">Python API Examples<a class="headerlink" href="#python-api-examples" title="Permanent link">&para;</a></h2>
+<h3 id="two-sample-proportions">Two-Sample Proportions<a class="headerlink" href="#two-sample-proportions" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">statdesign</span><span class="w"> </span><span class="kn">import</span> <span class="n">n_two_prop</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Basic calculation</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.60</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="mf">0.50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Group 1: </span><span class="si">{</span><span class="n">n1</span><span class="si">}</span><span class="s2">, Group 2: </span><span class="si">{</span><span class="n">n2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 394, 394</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Unequal allocation (2:1 ratio)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.60</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="mf">0.50</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Control: </span><span class="si">{</span><span class="n">n1</span><span class="si">}</span><span class="s2">, Treatment: </span><span class="si">{</span><span class="n">n2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 263, 526</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># One-sided test</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.60</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="mf">0.50</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;greater&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;One-sided: </span><span class="si">{</span><span class="n">n1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">n2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 311, 311</span>
+</code></pre></div>
+<h3 id="two-sample-means">Two-Sample Means<a class="headerlink" href="#two-sample-means" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">statdesign</span><span class="w"> </span><span class="kn">import</span> <span class="n">n_mean</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Z-test (known variance)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_mean</span><span class="p">(</span><span class="n">mu1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">mu2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Z-test: </span><span class="si">{</span><span class="n">n1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">n2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 63, 63</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># T-test (unknown variance) - requires SciPy for exact calculation</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_mean</span><span class="p">(</span><span class="n">mu1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">mu2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;T-test: </span><span class="si">{</span><span class="n">n1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">n2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 64, 64 (with SciPy)</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># Cohen&#39;s d effect size</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">cohens_d</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># medium effect</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_mean</span><span class="p">(</span><span class="n">mu1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">mu2</span><span class="o">=</span><span class="n">cohens_d</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cohen&#39;s d=</span><span class="si">{</span><span class="n">cohens_d</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">n1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">n2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 63, 63</span>
+</code></pre></div>
+<h3 id="anova-sample-sizes">ANOVA Sample Sizes<a class="headerlink" href="#anova-sample-sizes" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">statdesign</span><span class="w"> </span><span class="kn">import</span> <span class="n">n_anova</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># Requires SciPy for exact noncentral F calculations</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">n_per_group</span> <span class="o">=</span> <span class="n">n_anova</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">cohen_f</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">)</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample per group: </span><span class="si">{</span><span class="n">n_per_group</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 45</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Install SciPy: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="multiple-testing-corrections">Multiple Testing Corrections<a class="headerlink" href="#multiple-testing-corrections" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">statdesign</span><span class="w"> </span><span class="kn">import</span> <span class="n">alpha_adjust</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Bonferroni correction (conservative)</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">alpha_bonf</span> <span class="o">=</span> <span class="n">alpha_adjust</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bonferroni&quot;</span><span class="p">)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bonferroni α: </span><span class="si">{</span><span class="n">alpha_bonf</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 0.0050</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Benjamini-Hochberg (less conservative)</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">alpha_bh</span> <span class="o">=</span> <span class="n">alpha_adjust</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bh&quot;</span><span class="p">)</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BH α: </span><span class="si">{</span><span class="n">alpha_bh</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 0.0500</span>
+</code></pre></div>
+<h2 id="command-line-interface">Command-Line Interface<a class="headerlink" href="#command-line-interface" title="Permanent link">&para;</a></h2>
+<h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Two proportions</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>statdesign<span class="w"> </span>n_two_prop<span class="w"> </span>--p1<span class="w"> </span><span class="m">0</span>.6<span class="w"> </span>--p2<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>--alpha<span class="w"> </span><span class="m">0</span>.05<span class="w"> </span>--power<span class="w"> </span><span class="m">0</span>.8
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Two means with table output</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>statdesign<span class="w"> </span>n_mean<span class="w"> </span>--mu1<span class="w"> </span><span class="m">0</span><span class="w"> </span>--mu2<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>--sd<span class="w"> </span><span class="m">1</span><span class="w"> </span>--power<span class="w"> </span><span class="m">0</span>.8<span class="w"> </span>--table
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Multiple testing correction</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>statdesign<span class="w"> </span>alpha_adjust<span class="w"> </span>--m<span class="w"> </span><span class="m">12</span><span class="w"> </span>--method<span class="w"> </span>bh<span class="w"> </span>--alpha<span class="w"> </span><span class="m">0</span>.05
+</code></pre></div>
+<h3 id="json-output">JSON Output<a class="headerlink" href="#json-output" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Machine-readable output</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>statdesign<span class="w"> </span>n_two_prop<span class="w"> </span>--p1<span class="w"> </span><span class="m">0</span>.6<span class="w"> </span>--p2<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>--power<span class="w"> </span><span class="m">0</span>.8<span class="w"> </span>--json
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># {&quot;n1&quot;: 394, &quot;n2&quot;: 394, &quot;total&quot;: 788}</span>
+</code></pre></div>
+<h3 id="advanced-options">Advanced Options<a class="headerlink" href="#advanced-options" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Unequal allocation</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>statdesign<span class="w"> </span>n_mean<span class="w"> </span>--mu1<span class="w"> </span><span class="m">0</span><span class="w"> </span>--mu2<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>--sd<span class="w"> </span><span class="m">1</span><span class="w"> </span>--ratio<span class="w"> </span><span class="m">1</span>.5<span class="w"> </span>--power<span class="w"> </span><span class="m">0</span>.8
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># One-sided test</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>statdesign<span class="w"> </span>n_two_prop<span class="w"> </span>--p1<span class="w"> </span><span class="m">0</span>.6<span class="w"> </span>--p2<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>--alternative<span class="w"> </span>greater<span class="w"> </span>--power<span class="w"> </span><span class="m">0</span>.8
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Custom alpha level</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>statdesign<span class="w"> </span>n_mean<span class="w"> </span>--mu1<span class="w"> </span><span class="m">0</span><span class="w"> </span>--mu2<span class="w"> </span><span class="m">0</span>.2<span class="w"> </span>--sd<span class="w"> </span><span class="m">1</span><span class="w"> </span>--alpha<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span>--power<span class="w"> </span><span class="m">0</span>.9
+</code></pre></div>
+<h2 id="scipy-integration">SciPy Integration<a class="headerlink" href="#scipy-integration" title="Permanent link">&para;</a></h2>
+<h3 id="manual-control">Manual Control<a class="headerlink" href="#manual-control" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">statdesign._scipy_backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">has_scipy</span><span class="p">,</span> <span class="n">enable_scipy</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># Check if SciPy is available</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">if</span> <span class="n">has_scipy</span><span class="p">():</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SciPy available - using exact distributions&quot;</span><span class="p">)</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">enable_scipy</span><span class="p">()</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using conservative normal approximations&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="environment-variable">Environment Variable<a class="headerlink" href="#environment-variable" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Enable SciPy automatically if available</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">STATDESIGN_AUTO_SCIPY</span><span class="o">=</span><span class="m">1</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Now all calculations use SciPy when possible</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;from statdesign import n_mean; print(n_mean(0, 0.5, 1, test=&#39;t&#39;))&quot;</span>
+</code></pre></div>
+<h2 id="power-vs-sample-size-trade-offs">Power vs Sample Size Trade-offs<a class="headerlink" href="#power-vs-sample-size-trade-offs" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">statdesign</span><span class="w"> </span><span class="kn">import</span> <span class="n">n_two_prop</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># Power curve: how sample size affects power</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">effect_size</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># p1=0.6, p2=0.5</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">for</span> <span class="n">power</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.70</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">]:</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="n">power</span><span class="p">)</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Power </span><span class="si">{</span><span class="n">power</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">: n=</span><span class="si">{</span><span class="n">n1</span><span class="si">}</span><span class="s2"> per group&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="c1"># Effect size curve: how effect size affects sample size  </span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="k">for</span> <span class="n">p2</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">,</span> <span class="mf">0.55</span><span class="p">]:</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.60</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="n">p2</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">)</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="n">effect</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="mf">0.60</span> <span class="o">-</span> <span class="n">p2</span><span class="p">)</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Effect size </span><span class="si">{</span><span class="n">effect</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">: n=</span><span class="si">{</span><span class="n">n1</span><span class="si">}</span><span class="s2"> per group&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="common-pitfalls">Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Permanent link">&para;</a></h2>
+<h3 id="1-very-small-effect-sizes">1. Very Small Effect Sizes<a class="headerlink" href="#1-very-small-effect-sizes" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># This will require very large samples</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.501</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="mf">0.500</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">)</span>  <span class="c1"># n &gt; 30,000!</span>
+</code></pre></div>
+<h3 id="2-identical-groups-no-effect">2. Identical Groups (No Effect)<a class="headerlink" href="#2-identical-groups-no-effect" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># This raises an error</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">)</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>  <span class="c1"># &quot;Zero effect size detected&quot;</span>
+</code></pre></div>
+<h3 id="3-extreme-power-requirements">3. Extreme Power Requirements<a class="headerlink" href="#3-extreme-power-requirements" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Very high power requires much larger samples</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">n_low</span> <span class="o">=</span> <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.80</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>   <span class="c1"># 394</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">n_high</span> <span class="o">=</span> <span class="n">n_two_prop</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># 743</span>
+</code></pre></div>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../cli/">CLI Reference</a>: Complete command-line documentation</li>
+<li><a href="../api/">API Reference</a>: Detailed function reference with all parameters</li>
+<li><a href="../math/">Math Notes</a>: Statistical formulas and assumptions</li>
+<li><a href="../contributing/">Contributing</a>: Development setup and guidelines</li>
+</ul>
 
 
 

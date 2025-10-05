@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Sample Mean Calculator</title>
+    <style>
+        .calculator {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007cba;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #005a87;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: none;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        .col {
+            flex: 1;
+        }
+        .formula-note {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>Two-Sample Mean Sample Size Calculator</h2>
+        <p>Calculate the required sample size for comparing two means using t-test or z-test.</p>
+        
+        <form id="calculatorForm">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="mu1">Mean 1 (μ₁):</label>
+                        <input type="number" id="mu1" step="0.1" value="0" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="mu2">Mean 2 (μ₂):</label>
+                        <input type="number" id="mu2" step="0.1" value="0.5" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="sd">Common Standard Deviation (σ):</label>
+                <input type="number" id="sd" step="0.1" min="0.001" value="1.0" required>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="alpha">Alpha (α):</label>
+                        <input type="number" id="alpha" step="0.01" min="0.001" max="0.5" value="0.05" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="power">Power (1-β):</label>
+                        <input type="number" id="power" step="0.01" min="0.01" max="0.99" value="0.8" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="ratio">Allocation Ratio (n₂/n₁):</label>
+                        <input type="number" id="ratio" step="0.1" min="0.1" value="1.0" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="test">Test Type:</label>
+                        <select id="test" required>
+                            <option value="t">t-test (recommended)</option>
+                            <option value="z">z-test (large samples)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="tail">Alternative Hypothesis:</label>
+                <select id="tail" required>
+                    <option value="two-sided">Two-sided</option>
+                    <option value="greater">Greater (μ₁ > μ₂)</option>
+                    <option value="less">Less (μ₁ < μ₂)</option>
+                </select>
+            </div>
+            
+            <button type="submit">Calculate Sample Size</button>
+        </form>
+        
+        <div id="result" class="result">
+            <h3>Results</h3>
+            <div id="resultContent"></div>
+        </div>
+        
+        <div class="formula-note">
+            <strong>Note:</strong> This calculator uses Cohen's d effect size = |μ₁ - μ₂| / σ.
+            For t-test, degrees of freedom approximation is used for large samples.
+        </div>
+    </div>
+
+    <script>
+        // Normal distribution quantile function (approximation)
+        function normalInverse(p) {
+            const a1 = -3.969683028665376e+01;
+            const a2 = 2.209460984245205e+02;
+            const a3 = -2.759285104469687e+02;
+            const a4 = 1.383577518672690e+02;
+            const a5 = -3.066479806614716e+01;
+            const a6 = 2.506628277459239e+00;
+            
+            const b1 = -5.447609879822406e+01;
+            const b2 = 1.615858368580409e+02;
+            const b3 = -1.556989798598866e+02;
+            const b4 = 6.680131188771972e+01;
+            const b5 = -1.328068155288572e+01;
+            
+            const c1 = -7.784894002430293e-03;
+            const c2 = -3.223964580411365e-01;
+            const c3 = -2.400758277161838e+00;
+            const c4 = -2.549732539343734e+00;
+            const c5 = 4.374664141464968e+00;
+            const c6 = 2.938163982698783e+00;
+            
+            const d1 = 7.784695709041462e-03;
+            const d2 = 3.224671290700398e-01;
+            const d3 = 2.445134137142996e+00;
+            const d4 = 3.754408661907416e+00;
+            
+            if (p <= 0 || p >= 1) return NaN;
+            
+            const q = p - 0.5;
+            
+            if (Math.abs(q) <= 0.425) {
+                const r = 0.180625 - q * q;
+                return q * (((((a1 * r + a2) * r + a3) * r + a4) * r + a5) * r + a6) /
+                       (((((b1 * r + b2) * r + b3) * r + b4) * r + b5) * r + 1);
+            }
+            
+            const r = q < 0 ? p : 1 - p;
+            const t = Math.sqrt(-Math.log(r));
+            
+            let result;
+            if (t <= 5) {
+                result = (((((c1 * t + c2) * t + c3) * t + c4) * t + c5) * t + c6) /
+                        ((((d1 * t + d2) * t + d3) * t + d4) * t + 1);
+            } else {
+                result = (((((c1 * t + c2) * t + c3) * t + c4) * t + c5) * t + c6) /
+                        ((((d1 * t + d2) * t + d3) * t + d4) * t + 1);
+            }
+            
+            return q < 0 ? -result : result;
+        }
+        
+        // Approximation for t-distribution quantile (for large df, approaches normal)
+        function tInverse(p, df) {
+            if (df > 100) return normalInverse(p);  // Use normal approximation for large df
+            
+            // Simple correction for small df
+            const z = normalInverse(p);
+            if (df <= 4) return z * 1.2;  // Rough correction for small df
+            return z * (1 + 1/(4*df));     // Better approximation
+        }
+        
+        function calculateTwoMeans(mu1, mu2, sd, alpha, power, ratio, test, tail) {
+            // Input validation
+            if (sd <= 0) {
+                throw new Error("Standard deviation must be positive");
+            }
+            if (alpha <= 0 || alpha >= 1) {
+                throw new Error("Alpha must be between 0 and 1 (exclusive)");
+            }
+            if (power <= 0 || power >= 1) {
+                throw new Error("Power must be between 0 and 1 (exclusive)");
+            }
+            if (ratio <= 0) {
+                throw new Error("Ratio must be positive");
+            }
+            
+            // Effect size (Cohen's d)
+            const effect_size = Math.abs(mu1 - mu2) / sd;
+            
+            if (effect_size === 0) {
+                throw new Error("Effect size cannot be zero (μ₁ must differ from μ₂)");
+            }
+            
+            // Initial sample size calculation using normal approximation
+            let z_alpha, z_beta;
+            
+            if (tail === "two-sided") {
+                z_alpha = normalInverse(1 - alpha / 2);
+            } else {
+                z_alpha = normalInverse(1 - alpha);
+            }
+            z_beta = normalInverse(power);
+            
+            // Sample size formula
+            const numerator = Math.pow(z_alpha + z_beta, 2);
+            const denominator = Math.pow(effect_size, 2);
+            
+            let n_base = 2 * numerator / denominator;
+            
+            // Adjust for allocation ratio
+            n_base = n_base * (1 + ratio) / Math.pow(1 + Math.sqrt(ratio), 2);
+            
+            let n1 = Math.ceil(n_base);
+            let n2 = Math.ceil(n1 * ratio);
+            
+            // If using t-test, iterate to account for degrees of freedom
+            if (test === "t") {
+                for (let i = 0; i < 10; i++) {  // Iterate to convergence
+                    const df = n1 + n2 - 2;
+                    let t_alpha;
+                    
+                    if (tail === "two-sided") {
+                        t_alpha = tInverse(1 - alpha / 2, df);
+                    } else {
+                        t_alpha = tInverse(1 - alpha, df);
+                    }
+                    
+                    const t_beta = tInverse(power, df);
+                    const numerator_t = Math.pow(t_alpha + t_beta, 2);
+                    
+                    let n_base_t = 2 * numerator_t / Math.pow(effect_size, 2);
+                    n_base_t = n_base_t * (1 + ratio) / Math.pow(1 + Math.sqrt(ratio), 2);
+                    
+                    const n1_new = Math.ceil(n_base_t);
+                    const n2_new = Math.ceil(n1_new * ratio);
+                    
+                    if (n1_new === n1 && n2_new === n2) break;  // Converged
+                    
+                    n1 = n1_new;
+                    n2 = n2_new;
+                }
+            }
+            
+            return {
+                n1: n1,
+                n2: n2,
+                effect_size_d: effect_size,
+                total_n: n1 + n2,
+                test_type: test
+            };
+        }
+        
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const mu1 = parseFloat(document.getElementById('mu1').value);
+            const mu2 = parseFloat(document.getElementById('mu2').value);
+            const sd = parseFloat(document.getElementById('sd').value);
+            const alpha = parseFloat(document.getElementById('alpha').value);
+            const power = parseFloat(document.getElementById('power').value);
+            const ratio = parseFloat(document.getElementById('ratio').value);
+            const test = document.getElementById('test').value;
+            const tail = document.getElementById('tail').value;
+            
+            const resultDiv = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+            
+            try {
+                const result = calculateTwoMeans(mu1, mu2, sd, alpha, power, ratio, test, tail);
+                
+                resultContent.innerHTML = `
+                    <h4>Sample Size Results</h4>
+                    <p><strong>Group 1 (n₁):</strong> ${result.n1} subjects</p>
+                    <p><strong>Group 2 (n₂):</strong> ${result.n2} subjects</p>
+                    <p><strong>Total Sample Size:</strong> ${result.total_n} subjects</p>
+                    <p><strong>Effect Size (Cohen's d):</strong> ${result.effect_size_d.toFixed(4)}</p>
+                    <p><strong>Mean Difference:</strong> ${Math.abs(mu1 - mu2).toFixed(3)}</p>
+                    <p><strong>Test Type:</strong> ${result.test_type.toUpperCase()}-test</p>
+                    
+                    <h4>Input Parameters</h4>
+                    <p>μ₁ = ${mu1}, μ₂ = ${mu2}, σ = ${sd}</p>
+                    <p>α = ${alpha}, Power = ${power}, Allocation ratio = ${ratio}</p>
+                    <p>Alternative = ${tail}</p>
+                    
+                    <h4>Effect Size Interpretation</h4>
+                    <p>${getEffectSizeInterpretation(result.effect_size_d)}</p>
+                `;
+                
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultContent.innerHTML = `<p><strong>Error:</strong> ${error.message}</p>`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            }
+        });
+        
+        function getEffectSizeInterpretation(d) {
+            if (d < 0.2) return "Very small effect size (d < 0.2)";
+            if (d < 0.5) return "Small effect size (0.2 ≤ d < 0.5)";
+            if (d < 0.8) return "Medium effect size (0.5 ≤ d < 0.8)";
+            return "Large effect size (d ≥ 0.8)";
+        }
+        
+        // Calculate on page load with default values
+        document.getElementById('calculatorForm').dispatchEvent(new Event('submit'));
+    </script>
+</body>
+</html>
