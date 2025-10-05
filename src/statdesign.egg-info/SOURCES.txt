@@ -60,6 +60,7 @@ src/statdesign/api.py
 src/statdesign/cli.py
 src/statdesign/multiplicity.py
 src/statdesign/py.typed
+src/statdesign/validation.py
 src/statdesign/visualization.py
 src/statdesign.egg-info/PKG-INFO
 src/statdesign.egg-info/SOURCES.txt
@@ -104,6 +105,7 @@ tests/test_properties.py
 tests/test_proportions.py
 tests/test_proportions_comprehensive.py
 tests/test_proportions_parity.py
+tests/test_r_parity.py
 tests/test_scipy_backend.py
 tests/test_scipy_paths.py
 tests/test_survival.py
@@ -117,5 +119,12 @@ tests/golden/survival_convertN_golden.csv
 tests/golden/survival_events_golden.csv
 tests/golden/two_prop_exact_golden.csv
 tests/golden/two_prop_normal_golden.csv
+tests/parity/gpower_two_mean.csv
+tests/parity/gpower_two_prop.csv
+tests/parity/r_pwr_anova.csv
+tests/parity/r_pwr_one_sample_mean.csv
+tests/parity/r_pwr_one_sample_prop.csv
+tests/parity/r_pwr_two_mean.csv
+tests/parity/r_pwr_two_prop.csv
 tests/test_cli/test_cli_alpha_adjust_table.txt
 tests/test_cli/test_cli_two_prop_json.yml

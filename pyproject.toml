@@ -136,7 +136,7 @@ branch = true
 omit = ["src/statdesign/cli.py", "src/statdesign/sim/*"]
 
 [tool.coverage.report]
-fail_under = 25
+fail_under = 95
 show_missing = true
 skip_covered = true
 exclude_lines = [

@@ -39,6 +39,66 @@ def _validate_margin(ni_margin: float | None, ni_type: NIType | None) -> None:
             raise ValueError("ni_margin must be positive")
 
 
+def _check_normal_approximation_validity(p1: float, p2: float, n1: int, n2: int) -> None:
+    """Check if normal approximation is appropriate and warn if not."""
+    # Rule of thumb: np ≥ 5 and n(1-p) ≥ 5 for each group
+    violations = []
+    
+    # Check group 1
+    np1 = n1 * p1
+    nq1 = n1 * (1 - p1)
+    if np1 < 5:
+        violations.append(f"n1*p1 = {np1:.1f} < 5")
+    if nq1 < 5:
+        violations.append(f"n1*(1-p1) = {nq1:.1f} < 5")
+    
+    # Check group 2  
+    np2 = n2 * p2
+    nq2 = n2 * (1 - p2)
+    if np2 < 5:
+        violations.append(f"n2*p2 = {np2:.1f} < 5")
+    if nq2 < 5:
+        violations.append(f"n2*(1-p2) = {nq2:.1f} < 5")
+    
+    if violations:
+        warnings.warn(
+            f"Normal approximation may be inaccurate: {', '.join(violations)}. "
+            "Consider using exact=True or increasing sample size.",
+            RuntimeWarning,
+            stacklevel=3
+        )
+
+
+def _check_one_sample_normal_approximation(p: float, p0: float, n: int) -> None:
+    """Check if normal approximation is appropriate for one-sample proportion test."""
+    # For one-sample, check both observed and null proportions
+    violations = []
+    
+    # Check under null hypothesis (more conservative)
+    np0 = n * p0
+    nq0 = n * (1 - p0)
+    if np0 < 5:
+        violations.append(f"n*p0 = {np0:.1f} < 5")
+    if nq0 < 5:
+        violations.append(f"n*(1-p0) = {nq0:.1f} < 5")
+    
+    # Also check under alternative (observed proportion)
+    np = n * p
+    nq = n * (1 - p)
+    if np < 5:
+        violations.append(f"n*p = {np:.1f} < 5")
+    if nq < 5:
+        violations.append(f"n*(1-p) = {nq:.1f} < 5")
+    
+    if violations:
+        warnings.warn(
+            f"Normal approximation may be inaccurate: {', '.join(violations)}. "
+            "Consider using exact=True or increasing sample size.",
+            RuntimeWarning,
+            stacklevel=3
+        )
+
+
 def _binom_pmf_array(n: int, p: float) -> list[float]:
     q = 1.0 - p
     probs = [0.0] * (n + 1)
@@ -337,6 +397,11 @@ def n_one_sample_prop(
         return _equivalence_power(delta, se_null, alpha, ni_margin)
 
     n_final = solve.solve_monotone_int(evaluator, power, lower=2)
+    
+    # Add warning for dubious normal approximation if not using exact method
+    if not exact:
+        _check_one_sample_normal_approximation(p, p0, n_final)
+    
     return max(n_final, 2)
 
 
@@ -393,4 +458,9 @@ def n_two_prop(
 
     n1_final = solve.solve_monotone_int(evaluator, power, lower=2)
     n1_final, n2_final = alloc.groups_from_n1(n1_final, ratio)
+    
+    # Add warnings for dubious normal approximation if not using exact method
+    if not exact:
+        _check_normal_approximation_validity(p1, p2, n1_final, n2_final)
+    
     return max(n1_final, 2), max(n2_final, 2)
